@@ -14,4 +14,6 @@ inline fun <reified T: Annotation> Annotable.annotate() = annotate(T::class.asCl
 infix fun String.of(type: TypeName)  = Parameter(this, type)
 infix fun String.of(type: KClass<*>) = Parameter(this, type.asTypeName())
 
-infix fun Parameter.default(value: Any) = also { default(value) }
+infix fun Parameter.default(value: Named)  = also { default(value) }
+infix fun Parameter.default(value: Number) = also { default(value) }
+infix fun Parameter.default(value: String) = also { default(value) }

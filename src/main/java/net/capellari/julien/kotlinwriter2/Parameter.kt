@@ -14,13 +14,12 @@ class Parameter(override val name: String, val type: TypeName)
     val builder = ParameterSpec.builder(name, type)
 
     // Properties
-    override val spec: ParameterSpec
-        get() = builder.build()
+    override val spec get() = builder.build()
 
     // Methods
-    fun default(value: Any) {
-        builder.defaultValue(value.asKotlinValue())
-    }
+    fun default(value: Named)  { builder.defaultValue(value.name) }
+    fun default(value: Number) { builder.defaultValue(value.toString()) }
+    fun default(value: String) { builder.defaultValue(value) }
 
     override fun annotate(annotation: ClassName) {
         builder.addAnnotation(annotation)
