@@ -6,5 +6,4 @@ import kotlin.reflect.KClass
 interface Annotable {
     // Méthodes
     fun annotation(type: ClassName)
-    fun annotation(type: KClass<*>)
 }

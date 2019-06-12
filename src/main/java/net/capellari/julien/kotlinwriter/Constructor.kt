@@ -1,11 +1,11 @@
 package net.capellari.julien.kotlinwriter
 
 import com.squareup.kotlinpoet.FunSpec
-import net.capellari.julien.kotlinwriter.bases.AbsFunction
-import net.capellari.julien.kotlinwriter.interfaces.Parameters
+import net.capellari.julien.kotlinwriter.function.AbsFunction
+import net.capellari.julien.kotlinwriter.function.Parameters
 
 class Constructor : AbsFunction(FunSpec.constructorBuilder()),
-        Parameters {
+    Parameters {
 
     // Méthodes
     fun callThis(vararg code: String) {

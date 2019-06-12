@@ -24,9 +24,6 @@ abstract class AbsType(builder: TypeSpec.Builder): AbsWrapper<TypeSpec,TypeSpec.
     override fun annotation(type: ClassName) {
         builder.addAnnotation(type)
     }
-    override fun annotation(type: KClass<*>) {
-        builder.addAnnotation(type)
-    }
 
     // - modifiers
     override fun modifiers(vararg modifiers: KModifier) {

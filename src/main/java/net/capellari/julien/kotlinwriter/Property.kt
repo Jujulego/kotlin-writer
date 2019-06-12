@@ -1,31 +1,24 @@
 package net.capellari.julien.kotlinwriter
 
 import com.squareup.kotlinpoet.*
-import net.capellari.julien.kotlinwriter.bases.AbsFunction
+import net.capellari.julien.kotlinwriter.function.AbsFunction
 import net.capellari.julien.kotlinwriter.bases.AbsWrapper
 import net.capellari.julien.kotlinwriter.interfaces.Annotable
 import net.capellari.julien.kotlinwriter.interfaces.Modifiable
-import net.capellari.julien.kotlinwriter.interfaces.Parameters
-import net.capellari.julien.kotlinwriter.interfaces.Returns
+import net.capellari.julien.kotlinwriter.function.Parameters
 import kotlin.reflect.KClass
 
 @KotlinMarker
-class Property: AbsWrapper<PropertySpec,PropertySpec.Builder>,
+class Property(name: String, type: TypeName):
+        AbsWrapper<PropertySpec,PropertySpec.Builder>(PropertySpec.builder(name, type)),
         Annotable, Modifiable {
 
     // Propriétés
     override val spec get() = builder.build()
 
-    // Constructeurs
-    constructor(name: String, type: TypeName): super(PropertySpec.builder(name, type))
-    constructor(name: String, type: KClass<*>): super(PropertySpec.builder(name, type))
-
     // Méthodes
     // - annotations
     override fun annotation(type: ClassName) {
-        builder.addAnnotation(type)
-    }
-    override fun annotation(type: KClass<*>) {
         builder.addAnnotation(type)
     }
 
@@ -44,6 +37,6 @@ class Property: AbsWrapper<PropertySpec,PropertySpec.Builder>,
     }
 
     // Classes
-    class Getter : AbsFunction(FunSpec.getterBuilder()), Returns
+    class Getter : AbsFunction(FunSpec.getterBuilder())
     class Setter : AbsFunction(FunSpec.setterBuilder()), Parameters
 }

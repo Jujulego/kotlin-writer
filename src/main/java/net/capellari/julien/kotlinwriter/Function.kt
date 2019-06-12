@@ -1,21 +1,9 @@
 package net.capellari.julien.kotlinwriter
 
 import com.squareup.kotlinpoet.FunSpec
-import com.squareup.kotlinpoet.TypeName
-import net.capellari.julien.kotlinwriter.bases.AbsFunction
-import net.capellari.julien.kotlinwriter.interfaces.Parameters
-import net.capellari.julien.kotlinwriter.interfaces.Returns
-import kotlin.reflect.KClass
+import net.capellari.julien.kotlinwriter.function.AbsFunction
+import net.capellari.julien.kotlinwriter.function.Parameters
+import net.capellari.julien.kotlinwriter.function.Receiver
+import net.capellari.julien.kotlinwriter.function.Returns
 
-class Function(name: String): AbsFunction(FunSpec.builder(name)),
-        Parameters, Returns {
-
-    // Méthodes
-    // - receiver
-    fun receiver(type: TypeName) {
-        builder.receiver(type)
-    }
-    fun receiver(type: KClass<*>) {
-        builder.receiver(type)
-    }
-}
+class Function(name: String): AbsFunction(FunSpec.builder(name)), Receiver, Parameters, Returns

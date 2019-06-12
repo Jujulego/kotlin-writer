@@ -1,10 +1,9 @@
-package net.capellari.julien.kotlinwriter.interfaces
+package net.capellari.julien.kotlinwriter.function
 
-import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.TypeName
 import kotlin.reflect.KClass
 
-interface Returns : Wrapper<FunSpec,FunSpec.Builder> {
+interface Returns : Wrapper {
     // Méthodes
     fun returns(type: TypeName) {
         builder.returns(type)

@@ -1,13 +1,12 @@
-package net.capellari.julien.kotlinwriter.bases
+package net.capellari.julien.kotlinwriter.function
 
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
-import com.squareup.kotlinpoet.TypeVariableName
 import net.capellari.julien.kotlinwriter.Code
-import net.capellari.julien.kotlinwriter.ControlFlow
 import net.capellari.julien.kotlinwriter.KotlinMarker
 import net.capellari.julien.kotlinwriter.TypeParameter
+import net.capellari.julien.kotlinwriter.bases.AbsWrapper
 import net.capellari.julien.kotlinwriter.interfaces.Annotable
 import net.capellari.julien.kotlinwriter.interfaces.Modifiable
 import net.capellari.julien.kotlinwriter.interfaces.Codable
@@ -26,9 +25,6 @@ abstract class AbsFunction(builder: FunSpec.Builder):
     // Méthodes
     // - annotations
     override fun annotation(type: ClassName) {
-        builder.addAnnotation(type)
-    }
-    override fun annotation(type: KClass<*>) {
         builder.addAnnotation(type)
     }
 

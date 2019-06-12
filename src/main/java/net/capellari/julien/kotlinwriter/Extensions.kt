@@ -5,18 +5,24 @@ import com.squareup.kotlinpoet.asTypeName
 import net.capellari.julien.kotlinwriter.bases.AbsType
 import net.capellari.julien.kotlinwriter.interfaces.Annotable
 import net.capellari.julien.kotlinwriter.interfaces.Container
-import net.capellari.julien.kotlinwriter.interfaces.Parameters
-import net.capellari.julien.kotlinwriter.interfaces.Returns
+import net.capellari.julien.kotlinwriter.function.Parameters
+import net.capellari.julien.kotlinwriter.function.Returns
 import kotlin.reflect.KClass
 
 // File
 fun createFile(pkg: String, name: String, build: File.() -> Unit) = File(pkg, name).apply(build)
 
+// Annotable
+fun Annotable.annotation(cls: KClass<*>) = annotation(cls.asTypeName())
+inline fun <reified A: Annotation> Annotable.annotation() = annotation(A::class)
+
+// Parameters
+inline fun <reified T: Any> Parameters.parameter(name: String, nullable: Boolean = false, noinline build: Parameter.() -> Unit = {})
+        = parameter(name of T::class.asNullableTypeName(nullable), build)
+
 // Type shortcuts
 fun<T: Any> KClass<T>.asNullableTypeName(nullable: Boolean = true)
         = asTypeName().copy(nullable = nullable)
-
-inline fun <reified A: Annotation> Annotable.annotation() = annotation(A::class)
 
 inline fun <reified T: Any> File.import(alias: String? = null) = import(T::class, alias)
 inline fun <reified T: Any> File.addAlias(name: String, noinline build: TypeAlias.() -> Unit) = addAlias(name, T::class, build)
@@ -27,11 +33,6 @@ inline fun <reified T: Any> AbsType.superinterface(delegate: String, vararg args
 
 inline fun <reified T: Any> TypeParameter.bound(nullable: Boolean = false) = bound(T::class, nullable)
 
-inline fun <reified T: Any> Parameters.parameter(nullable: Boolean = false)
-        = parameter(T::class.asNullableTypeName(nullable))
-
-inline fun <reified T: Any> Parameters.parameter(name: String, nullable: Boolean = false, noinline build: Parameter.() -> Unit = {})
-        = parameter(name, T::class.asNullableTypeName(nullable), build)
 
 inline fun <reified T: Any> Function.receiver(nullable: Boolean = false)
         = receiver(T::class.asNullableTypeName(nullable))
@@ -39,21 +40,12 @@ inline fun <reified T: Any> Function.receiver(nullable: Boolean = false)
 inline fun <reified T: Any> Returns.returns(nullable: Boolean = false)
         = returns(T::class.asNullableTypeName(nullable))
 
-// Parameters
-object unnamed
-
-infix fun String.of(type: TypeName)  = Parameter(this, type)
-infix fun String.of(type: KClass<*>) = Parameter(this, type)
-
-infix fun unnamed.of(type: TypeName) = Parameter(type)
-infix fun unnamed.of(type: KClass<*>) = Parameter(type)
-
 // Function
 inline fun Container.function(name: String, vararg params: Parameter, returns: TypeName? = null, receiver: TypeName? = null, crossinline build: Function.() -> Unit)
         = function(name) {
             receiver?.let { receiver(receiver) }
-            params.forEach { builder.addParameter(it.spec) }
             returns?.let { returns(returns) }
+            parameters(*params)
 
             this.build()
         }
@@ -63,6 +55,9 @@ inline fun Container.function(name: String, vararg params: Parameter, returns: T
         = function(name, *params, returns = returns, receiver = receiver.asTypeName(), build = build)
 inline fun Container.function(name: String, vararg params: Parameter, returns: KClass<*>, receiver: KClass<*>, crossinline build: Function.() -> Unit)
         = function(name, *params, returns = returns.asTypeName(), receiver = receiver.asTypeName(), build = build)
+
+inline fun Property.setter(vararg params: Parameter, crossinline build: Property.Setter.() -> Unit)
+        = setter { parameters(*params); this.build() }
 
 // Constructeurs
 inline fun Class.primaryConstructor(vararg params: Parameter, crossinline build: Constructor.() -> Unit)

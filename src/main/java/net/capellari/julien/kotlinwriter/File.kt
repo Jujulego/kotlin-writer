@@ -19,9 +19,6 @@ class File(pkg: String, name: String): AbsWrapper<FileSpec,FileSpec.Builder>(Fil
     override fun annotation(type: ClassName) {
         builder.addAnnotation(type)
     }
-    override fun annotation(type: KClass<*>) {
-        builder.addAnnotation(type)
-    }
 
     // - comment
     override fun comment(format: String, vararg args: Any) {

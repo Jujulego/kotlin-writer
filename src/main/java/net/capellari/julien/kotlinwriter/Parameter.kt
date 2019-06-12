@@ -28,9 +28,6 @@ class Parameter: AbsWrapper<ParameterSpec,ParameterSpec.Builder>,
     override fun annotation(type: ClassName) {
         builder.addAnnotation(type)
     }
-    override fun annotation(type: KClass<*>) {
-        builder.addAnnotation(type)
-    }
 
     // - modifiers
     override fun modifiers(vararg modifiers: KModifier) {
@@ -46,3 +43,13 @@ class Parameter: AbsWrapper<ParameterSpec,ParameterSpec.Builder>,
         builder.defaultValue(Code().apply(build).spec)
     }
 }
+
+// Parameters
+@Suppress("ClassName")
+object unnamed
+
+infix fun String.of(type: TypeName)  = Parameter(this, type)
+infix fun String.of(type: KClass<*>) = Parameter(this, type)
+
+infix fun unnamed.of(type: TypeName)  = Parameter(type)
+infix fun unnamed.of(type: KClass<*>) = Parameter(type)
