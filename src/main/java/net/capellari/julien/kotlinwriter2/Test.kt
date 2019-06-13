@@ -1,8 +1,7 @@
 package net.capellari.julien.kotlinwriter2
 
 fun test() {
-    val p: Parameter = "test" of Int::class default 8
-    val c = Code().apply {
-        + "test($p)" + "lpe;lkemz" + p + "56"
+    function("test", "a" of Int::class, "b" of Int::class default 0, returns = Int::class) { (a, b) ->
+        + "return $a + $b"
     }
 }
