@@ -6,29 +6,34 @@ import com.squareup.kotlinpoet.asTypeName
 import net.capellari.julien.kotlinwriter.asNullableTypeName
 import net.capellari.julien.kotlinwriter2.bases.*
 import net.capellari.julien.kotlinwriter2.bases.function.*
+import net.capellari.julien.kotlinwriter2.bases.type.AbsContainer
 import kotlin.reflect.KClass
 
 // Annotable
 fun Annotable.annotate(type: KClass<*>) = annotate(type.asClassName())
 inline fun <reified T: Annotation> Annotable.annotate() = annotate(T::class.asClassName())
 
+// Class
+fun _class(name: String, build: Class.() -> Unit)
+        = Class(name).apply(build)
+
 // Function
-fun function(name: String, vararg params: Parameter, receiver: TypeName? = null, returns: TypeName? = null, build: AbsCallable.(List<Parameter>) -> Unit = {}): Function {
-    val f = Function(name)
+fun AbsContainer.function(name: String, vararg params: Parameter, receiver: TypeName? = null, returns: TypeName? = null, build: AbsCallable.(List<Parameter>) -> Unit = {}): Function
+         = Function(name).also { f ->
+            receiver?.let { f.receiver(it) }
+            returns?.let { f.returns(it) }
 
-    receiver?.let { f.receiver(it) }
-    returns?.let { f.returns(it) }
+            val p = f.parameters(*params)
+            f.build(p)
 
-    val p = f.parameters(*params)
-    f.build(p)
+            add(f)
+        }
 
-    return f
-}
-fun function(name: String, vararg params: Parameter, receiver: KClass<*>, returns: TypeName? = null, build: AbsCallable.(List<Parameter>) -> Unit = {})
+fun AbsContainer.function(name: String, vararg params: Parameter, receiver: KClass<*>, returns: TypeName? = null, build: AbsCallable.(List<Parameter>) -> Unit = {})
         = function(name, *params, receiver = receiver.asTypeName(), returns = returns, build = build)
-fun function(name: String, vararg params: Parameter, receiver: TypeName? = null, returns: KClass<*>, build: AbsCallable.(List<Parameter>) -> Unit = {})
+fun AbsContainer.function(name: String, vararg params: Parameter, receiver: TypeName? = null, returns: KClass<*>, build: AbsCallable.(List<Parameter>) -> Unit = {})
         = function(name, *params, receiver = receiver, returns = returns.asTypeName(), build = build)
-fun function(name: String, vararg params: Parameter, receiver: KClass<*>, returns: KClass<*>, build: AbsCallable.(List<Parameter>) -> Unit = {})
+fun AbsContainer.function(name: String, vararg params: Parameter, receiver: KClass<*>, returns: KClass<*>, build: AbsCallable.(List<Parameter>) -> Unit = {})
         = function(name, *params, receiver = receiver.asTypeName(), returns = returns.asTypeName(), build = build)
 
 // Parameter
