@@ -1,6 +1,7 @@
 package net.capellari.julien.kotlinwriter2.bases.function
 
 import com.squareup.kotlinpoet.ClassName
+import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import net.capellari.julien.kotlinwriter2.bases.Annotable
@@ -23,12 +24,14 @@ interface Callable: Wrapper<FunSpec>, Annotable, Modifiable, Codable {
     override fun modifier(modifier: KModifier) {
         builder.addModifiers(modifier)
     }
-
     override fun modifier(vararg modifiers: KModifier) {
         builder.addModifiers(*modifiers)
     }
 
     override fun add(code: String) {
+        builder.addCode(code)
+    }
+    override fun add(code: CodeBlock) {
         builder.addCode(code)
     }
 }

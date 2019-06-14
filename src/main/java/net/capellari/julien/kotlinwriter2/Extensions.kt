@@ -5,10 +5,7 @@ import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.asTypeName
 import net.capellari.julien.kotlinwriter.asNullableTypeName
 import net.capellari.julien.kotlinwriter2.bases.*
-import net.capellari.julien.kotlinwriter2.bases.function.Callable
-import net.capellari.julien.kotlinwriter2.bases.function.Parameters
-import net.capellari.julien.kotlinwriter2.bases.function.Receiver
-import net.capellari.julien.kotlinwriter2.bases.function.Return
+import net.capellari.julien.kotlinwriter2.bases.function.*
 import kotlin.reflect.KClass
 
 // Annotable
@@ -16,7 +13,7 @@ fun Annotable.annotate(type: KClass<*>) = annotate(type.asClassName())
 inline fun <reified T: Annotation> Annotable.annotate() = annotate(T::class.asClassName())
 
 // Function
-fun function(name: String, vararg params: Parameter, receiver: TypeName? = null, returns: TypeName? = null, build: Callable.(List<Parameter>) -> Unit = {}): Function {
+fun function(name: String, vararg params: Parameter, receiver: TypeName? = null, returns: TypeName? = null, build: AbsCallable.(List<Parameter>) -> Unit = {}): Function {
     val f = Function(name)
 
     receiver?.let { f.receiver(it) }
@@ -27,11 +24,11 @@ fun function(name: String, vararg params: Parameter, receiver: TypeName? = null,
 
     return f
 }
-fun function(name: String, vararg params: Parameter, receiver: KClass<*>, returns: TypeName? = null, build: Callable.(List<Parameter>) -> Unit = {})
+fun function(name: String, vararg params: Parameter, receiver: KClass<*>, returns: TypeName? = null, build: AbsCallable.(List<Parameter>) -> Unit = {})
         = function(name, *params, receiver = receiver.asTypeName(), returns = returns, build = build)
-fun function(name: String, vararg params: Parameter, receiver: TypeName? = null, returns: KClass<*>, build: Callable.(List<Parameter>) -> Unit = {})
+fun function(name: String, vararg params: Parameter, receiver: TypeName? = null, returns: KClass<*>, build: AbsCallable.(List<Parameter>) -> Unit = {})
         = function(name, *params, receiver = receiver, returns = returns.asTypeName(), build = build)
-fun function(name: String, vararg params: Parameter, receiver: KClass<*>, returns: KClass<*>, build: Callable.(List<Parameter>) -> Unit = {})
+fun function(name: String, vararg params: Parameter, receiver: KClass<*>, returns: KClass<*>, build: AbsCallable.(List<Parameter>) -> Unit = {})
         = function(name, *params, receiver = receiver.asTypeName(), returns = returns.asTypeName(), build = build)
 
 // Parameter

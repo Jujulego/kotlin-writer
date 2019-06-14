@@ -1,5 +1,7 @@
 package net.capellari.julien.kotlinwriter2.bases
 
+import com.squareup.kotlinpoet.CodeBlock
+
 interface Codable {
     // Operators
     operator fun plus(code: String) = also { add(code) }
@@ -8,4 +10,5 @@ interface Codable {
 
     // Methods
     fun add(code: String)
+    fun add(code: CodeBlock)
 }
