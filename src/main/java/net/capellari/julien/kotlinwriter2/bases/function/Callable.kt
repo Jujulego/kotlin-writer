@@ -1,14 +1,14 @@
-package net.capellari.julien.kotlinwriter2.interfaces.function
+package net.capellari.julien.kotlinwriter2.bases.function
 
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
-import net.capellari.julien.kotlinwriter2.interfaces.Annotable
-import net.capellari.julien.kotlinwriter2.interfaces.Codable
-import net.capellari.julien.kotlinwriter2.interfaces.Modifiable
-import net.capellari.julien.kotlinwriter2.interfaces.Wrapper
+import net.capellari.julien.kotlinwriter2.bases.Annotable
+import net.capellari.julien.kotlinwriter2.bases.Codable
+import net.capellari.julien.kotlinwriter2.bases.Modifiable
+import net.capellari.julien.kotlinwriter2.bases.Wrapper
 
-interface Builder: Wrapper<FunSpec>, Annotable, Modifiable, Codable {
+interface Callable: Wrapper<FunSpec>, Annotable, Modifiable, Codable {
     // Attributes
     val builder: FunSpec.Builder
 

@@ -1,8 +1,8 @@
-package net.capellari.julien.kotlinwriter2.interfaces.function
+package net.capellari.julien.kotlinwriter2.bases.function
 
 import net.capellari.julien.kotlinwriter2.Parameter
 
-interface Parameters: Builder {
+interface Parameters: Callable {
     // Methods
     fun parameter(param: Parameter, build: Parameter.() -> Unit = {}): Parameter {
         param.build()

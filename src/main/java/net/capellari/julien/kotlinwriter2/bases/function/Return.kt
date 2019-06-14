@@ -1,8 +1,8 @@
-package net.capellari.julien.kotlinwriter2.interfaces.function
+package net.capellari.julien.kotlinwriter2.bases.function
 
 import com.squareup.kotlinpoet.TypeName
 
-interface Return: Builder {
+interface Return: Callable {
     // Method
     fun returns(type: TypeName) {
         builder.returns(type)

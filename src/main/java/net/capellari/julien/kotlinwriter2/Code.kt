@@ -1,8 +1,8 @@
 package net.capellari.julien.kotlinwriter2
 
 import com.squareup.kotlinpoet.CodeBlock
-import net.capellari.julien.kotlinwriter2.interfaces.Codable
-import net.capellari.julien.kotlinwriter2.interfaces.Wrapper
+import net.capellari.julien.kotlinwriter2.bases.Codable
+import net.capellari.julien.kotlinwriter2.bases.Wrapper
 
 @KotlinMarker
 class Code: Wrapper<CodeBlock>, Codable {

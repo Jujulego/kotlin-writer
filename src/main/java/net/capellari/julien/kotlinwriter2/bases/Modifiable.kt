@@ -1,4 +1,4 @@
-package net.capellari.julien.kotlinwriter2.interfaces
+package net.capellari.julien.kotlinwriter2.bases
 
 import com.squareup.kotlinpoet.KModifier
 
