@@ -13,11 +13,10 @@ import kotlin.reflect.KClass
 fun Annotable.annotate(type: KClass<*>) = annotate(type.asClassName())
 inline fun <reified T: Annotation> Annotable.annotate() = annotate(T::class.asClassName())
 
-// Class
-fun _class(name: String, build: Class.() -> Unit)
-        = Class(name).apply(build)
+// Container
+fun AbsContainer._class(name: String, build: Class.() -> Unit)
+        = Class(name).apply(build).also { add(it) }
 
-// Function
 fun AbsContainer.function(name: String, vararg params: Parameter, receiver: TypeName? = null, returns: TypeName? = null, build: AbsCallable.(List<Parameter>) -> Unit = {}): Function
          = Function(name).also { f ->
             receiver?.let { f.receiver(it) }
@@ -35,6 +34,10 @@ fun AbsContainer.function(name: String, vararg params: Parameter, receiver: Type
         = function(name, *params, receiver = receiver, returns = returns.asTypeName(), build = build)
 fun AbsContainer.function(name: String, vararg params: Parameter, receiver: KClass<*>, returns: KClass<*>, build: AbsCallable.(List<Parameter>) -> Unit = {})
         = function(name, *params, receiver = receiver.asTypeName(), returns = returns.asTypeName(), build = build)
+
+// File
+fun createFile(pkg: String, name: String, build: File.() -> Unit)
+        = File(pkg, name).apply(build).spec
 
 // Parameter
 infix fun String.of(type: TypeName)  = Parameter(this, type)
