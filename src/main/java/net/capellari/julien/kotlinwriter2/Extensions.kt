@@ -8,6 +8,7 @@ import net.capellari.julien.kotlinwriter2.bases.function.*
 import net.capellari.julien.kotlinwriter2.bases.property.Property as AbsProperty
 import net.capellari.julien.kotlinwriter2.bases.type.AbsContainer
 import net.capellari.julien.kotlinwriter2.bases.type.AbsType
+import net.capellari.julien.kotlinwriter2.bases.type.Type
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 import kotlin.reflect.full.extensionReceiverParameter
@@ -115,3 +116,24 @@ inline fun <reified T: Any> Return.returns(nullable: Boolean = false) = returns(
 // Receiver
 fun Receiver.receiver(type: KClass<*>, nullable: Boolean = false) = receiver(type.asNullableTypeName(nullable))
 inline fun <reified T: Any> Receiver.receiver(nullable: Boolean = false) = receiver(T::class.asNullableTypeName(nullable))
+
+// Type
+fun Type.superclass(pkg: String, name: String, vararg params: String)
+        = superclass(ClassName(pkg, name), *params)
+
+fun Type.superclass(cls: KClass<*>, vararg params: String)
+        = superclass(cls.asTypeName(), *params)
+
+inline fun <reified T: Any> Type.superclass(vararg params: String)
+        = superclass(T::class.asTypeName(), *params)
+
+fun Type.superinterface(pkg: String, name: String)
+        = superinterface(ClassName(pkg, name))
+
+fun Type.superinterface(cls: KClass<*>)
+        = superinterface(cls.asTypeName())
+
+inline fun <reified T: Any> Type.superinterface()
+        = superinterface(T::class.asTypeName())
+
+

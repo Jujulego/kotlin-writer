@@ -14,6 +14,9 @@ fun test() {
     createFile(clsName) {
         // Classes
         class_(clsName) {
+            // Inheritance
+            superclass("net.capellari.julien.threed.jni", "JNIClass", "handle")
+
             // Companion
             companion {
                 function("create", *coords, returns = Long::class) {
