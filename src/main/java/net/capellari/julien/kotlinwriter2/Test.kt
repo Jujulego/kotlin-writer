@@ -45,7 +45,7 @@ fun test() {
                 modifier(KModifier.PRIVATE, KModifier.EXTERNAL)
             }
 
-            function("equal", "other" of clsName, returns = Boolean::class) {
+            val equal = function("equal", "other" of clsName, returns = Boolean::class) {
                 modifier(KModifier.PRIVATE, KModifier.EXTERNAL)
             }
 
@@ -54,6 +54,27 @@ fun test() {
                 getter {
                     + "returns $getDataA()"
                 }
+            }
+
+            // Methods
+            override(Any::equals) { (other) ->
+                flow("if ($other === this)") {
+                    + "return true"
+                }
+
+                flow("if (other is $clsName)") {
+                    + "return $equal($other)"
+                }
+
+                + "return super.equals(other)"
+            }
+
+            override(Any::hashCode) {
+                + "return $data.contentHashCode()"
+            }
+
+            override(Any::toString) {
+                + "return \"Point(${(0 until 2).joinToString(", ") { "\${this[$it]}" }})\""
             }
         }
 

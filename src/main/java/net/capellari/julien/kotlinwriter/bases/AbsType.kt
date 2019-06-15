@@ -172,9 +172,9 @@ abstract class AbsType(builder: TypeSpec.Builder): AbsWrapper<TypeSpec,TypeSpec.
                     val type = it.type.asTypeName()
 
                     if (name == null) {
-                        parameter(type)
+                        parameter("" of type)
                     } else {
-                        parameter(name, type) {
+                        parameter(name of type) {
                             if (it.isVararg) modifiers(KModifier.VARARG)
                         }
                     }

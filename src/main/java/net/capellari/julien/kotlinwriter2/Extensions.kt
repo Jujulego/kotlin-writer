@@ -1,16 +1,17 @@
 package net.capellari.julien.kotlinwriter2
 
-import com.squareup.kotlinpoet.ClassName
-import com.squareup.kotlinpoet.TypeName
-import com.squareup.kotlinpoet.asClassName
-import com.squareup.kotlinpoet.asTypeName
+import com.squareup.kotlinpoet.*
 import net.capellari.julien.kotlinwriter.asNullableTypeName
 import net.capellari.julien.kotlinwriter2.bases.*
 import net.capellari.julien.kotlinwriter2.bases.Receiver
 import net.capellari.julien.kotlinwriter2.bases.function.*
 import net.capellari.julien.kotlinwriter2.bases.property.Property as AbsProperty
 import net.capellari.julien.kotlinwriter2.bases.type.AbsContainer
+import net.capellari.julien.kotlinwriter2.bases.type.AbsType
 import kotlin.reflect.KClass
+import kotlin.reflect.KFunction
+import kotlin.reflect.full.extensionReceiverParameter
+import kotlin.reflect.full.valueParameters
 
 // Annotable
 fun Annotable.annotate(type: KClass<*>) = annotate(type.asClassName())
@@ -46,6 +47,31 @@ fun AbsContainer.property(param: Parameter, receiver: TypeName? = null, build: A
 
             p.(build)()
             add(p)
+        }
+
+// AbsType
+inline fun <reified R: Any> AbsType.override(func: KFunction<R>, crossinline build: AbsCallable.(List<Parameter>) -> Unit)
+        = Function(func.name).also { f ->
+            f.modifier(KModifier.OVERRIDE)
+            if (func.isInfix) f.modifier(KModifier.INFIX)
+
+            func.extensionReceiverParameter?.let {
+                f.receiver(it.type.asTypeName())
+            }
+
+            val params = func.valueParameters.map {
+                val name = it.name
+                val type = it.type.asTypeName()
+
+                f.parameter((name ?: "") of type) {
+                    if (it.isVararg) modifier(KModifier.VARARG)
+                }
+            }
+
+            f.returns(func.returnType.asTypeName())
+            f.(build)(params)
+
+            add(f)
         }
 
 // File
