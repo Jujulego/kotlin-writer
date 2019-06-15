@@ -6,6 +6,7 @@ import com.squareup.kotlinpoet.TypeSpec
 import net.capellari.julien.kotlinwriter2.bases.Modifiable
 import net.capellari.julien.kotlinwriter2.bases.Wrapper
 import net.capellari.julien.kotlinwriter2.bases.function.AbsCallable
+import net.capellari.julien.kotlinwriter2.bases.property.Property
 
 abstract class AbsType(val builder: TypeSpec.Builder): AbsContainer(), Wrapper<TypeSpec>, Modifiable {
     // Properties
@@ -25,5 +26,8 @@ abstract class AbsType(val builder: TypeSpec.Builder): AbsContainer(), Wrapper<T
     }
     override fun add(type: AbsType) {
         builder.addType(type.spec)
+    }
+    override fun add(prop: Property) {
+        builder.addProperty(prop.spec)
     }
 }

@@ -6,6 +6,7 @@ import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.TypeName
 import net.capellari.julien.kotlinwriter2.bases.Wrapper
 import net.capellari.julien.kotlinwriter2.bases.function.AbsCallable
+import net.capellari.julien.kotlinwriter2.bases.property.Property
 import net.capellari.julien.kotlinwriter2.bases.type.AbsContainer
 import net.capellari.julien.kotlinwriter2.bases.type.AbsType
 
@@ -26,6 +27,9 @@ class File(pkg: String, name: String): AbsContainer(), Wrapper<FileSpec> {
     }
     override fun add(type: AbsType) {
         builder.addType(type.spec)
+    }
+    override fun add(prop: Property) {
+        builder.addProperty(prop.spec)
     }
 
     fun import(pkg: String, name: String, alias: String? = null) {

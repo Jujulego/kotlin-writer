@@ -12,14 +12,18 @@ class Parameter(override val name: String, val type: TypeName)
 
     // Attributes
     val builder = ParameterSpec.builder(name, type)
+    var default: String? = null
 
     // Properties
     override val spec get() = builder.build()
 
     // Methods
-    fun default(value: Named)  { builder.defaultValue(value.name) }
-    fun default(value: Number) { builder.defaultValue(value.toString()) }
-    fun default(value: String) { builder.defaultValue(value) }
+    fun default(value: Named)  { default(value.name) }
+    fun default(value: Number) { default(value.toString()) }
+    fun default(value: String) {
+        builder.defaultValue(value)
+        default = value
+    }
 
     override fun annotate(annotation: ClassName) {
         builder.addAnnotation(annotation)

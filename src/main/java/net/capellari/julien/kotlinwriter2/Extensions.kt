@@ -6,7 +6,9 @@ import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.asTypeName
 import net.capellari.julien.kotlinwriter.asNullableTypeName
 import net.capellari.julien.kotlinwriter2.bases.*
+import net.capellari.julien.kotlinwriter2.bases.Receiver
 import net.capellari.julien.kotlinwriter2.bases.function.*
+import net.capellari.julien.kotlinwriter2.bases.property.Property as AbsProperty
 import net.capellari.julien.kotlinwriter2.bases.type.AbsContainer
 import kotlin.reflect.KClass
 
@@ -15,7 +17,7 @@ fun Annotable.annotate(type: KClass<*>) = annotate(type.asClassName())
 inline fun <reified T: Annotation> Annotable.annotate() = annotate(T::class.asClassName())
 
 // Container
-fun AbsContainer._class(name: String, build: Class.() -> Unit)
+fun AbsContainer.class_(name: String, build: Class.() -> Unit)
         = Class(name).apply(build).also { add(it) }
 
 fun AbsContainer.function(name: String, vararg params: Parameter, receiver: TypeName? = null, returns: TypeName? = null, build: AbsCallable.(List<Parameter>) -> Unit = {}): Function
@@ -34,6 +36,15 @@ fun AbsContainer.function(name: String, vararg params: Parameter, receiver: Type
 fun AbsContainer.function(name: String, vararg params: Parameter, receiver: KClass<*>, returns: KClass<*>, build: AbsCallable.(List<Parameter>) -> Unit = {})
         = function(name, *params, receiver = receiver.asTypeName(), returns = returns.asTypeName(), build = build)
 
+fun AbsContainer.property(param: Parameter, receiver: TypeName? = null, build: AbsProperty.() -> Unit = {})
+        = Property(param.name, param.type).also { p ->
+            receiver?.let { p.receiver(it) }
+            param.default?.let { p.init(it) }
+
+            p.(build)()
+            add(p)
+        }
+
 // File
 fun createFile(pkg: String, name: String, build: File.() -> Unit)
         = File(pkg, name).apply(build).spec
@@ -44,7 +55,7 @@ fun File.import(name: ClassName, alias: String? = null)
 fun File.import(cls: KClass<*>, alias: String? = null)
         = import(cls.asClassName(), alias)
 
-inline fun <reified T> File.import(alias: String? = null)
+inline fun <reified T: Any> File.import(alias: String? = null)
         = import(T::class, alias)
 
 // Parameter
