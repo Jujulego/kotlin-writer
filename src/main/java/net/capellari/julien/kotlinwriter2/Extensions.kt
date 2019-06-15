@@ -20,6 +20,9 @@ inline fun <reified T: Annotation> Annotable.annotate() = annotate(T::class.asCl
 fun AbsContainer.class_(name: String, build: Class.() -> Unit)
         = Class(name).apply(build).also { add(it) }
 
+fun AbsContainer.class_(name: ClassName, build: Class.() -> Unit)
+        = Class(name.simpleName).apply(build).also { add(it) }
+
 fun AbsContainer.function(name: String, vararg params: Parameter, receiver: TypeName? = null, returns: TypeName? = null, build: AbsCallable.(List<Parameter>) -> Unit = {}): Function
         = Function(name).also { f ->
             receiver?.let { f.receiver(it) }
@@ -48,6 +51,9 @@ fun AbsContainer.property(param: Parameter, receiver: TypeName? = null, build: A
 // File
 fun createFile(pkg: String, name: String, build: File.() -> Unit)
         = File(pkg, name).apply(build).spec
+
+fun createFile(cls: ClassName, build: File.() -> Unit)
+        = File(cls.packageName, cls.simpleName).apply(build).spec
 
 fun File.import(name: ClassName, alias: String? = null)
         = import(name.packageName, name.simpleName, alias)
