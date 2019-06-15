@@ -1,5 +1,6 @@
 package net.capellari.julien.kotlinwriter2
 
+import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.asTypeName
@@ -18,13 +19,11 @@ fun AbsContainer._class(name: String, build: Class.() -> Unit)
         = Class(name).apply(build).also { add(it) }
 
 fun AbsContainer.function(name: String, vararg params: Parameter, receiver: TypeName? = null, returns: TypeName? = null, build: AbsCallable.(List<Parameter>) -> Unit = {}): Function
-         = Function(name).also { f ->
+        = Function(name).also { f ->
             receiver?.let { f.receiver(it) }
             returns?.let { f.returns(it) }
 
-            val p = f.parameters(*params)
-            f.build(p)
-
+            f.build(f.parameters(*params))
             add(f)
         }
 
@@ -38,6 +37,15 @@ fun AbsContainer.function(name: String, vararg params: Parameter, receiver: KCla
 // File
 fun createFile(pkg: String, name: String, build: File.() -> Unit)
         = File(pkg, name).apply(build).spec
+
+fun File.import(name: ClassName, alias: String? = null)
+        = import(name.packageName, name.simpleName, alias)
+
+fun File.import(cls: KClass<*>, alias: String? = null)
+        = import(cls.asClassName(), alias)
+
+inline fun <reified T> File.import(alias: String? = null)
+        = import(T::class, alias)
 
 // Parameter
 infix fun String.of(type: TypeName)  = Parameter(this, type)
