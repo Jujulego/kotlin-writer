@@ -32,6 +32,10 @@ class Property(override val name: String, val type: TypeName): Property, Receive
         builder.addModifiers(modifier)
     }
 
+    override fun init(code: String) {
+        builder.initializer(code)
+    }
+
     override fun getter(build: AbsCallable.() -> Unit) {
         val g = Getter()
         g.returns(type)

@@ -8,6 +8,7 @@ import net.capellari.julien.kotlinwriter2.bases.function.*
 import net.capellari.julien.kotlinwriter2.bases.property.Property as AbsProperty
 import net.capellari.julien.kotlinwriter2.bases.type.AbsContainer
 import net.capellari.julien.kotlinwriter2.bases.type.AbsType
+import net.capellari.julien.kotlinwriter2.bases.type.Constructor
 import net.capellari.julien.kotlinwriter2.bases.type.Type
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
@@ -51,6 +52,17 @@ fun AbsContainer.property(param: Parameter, receiver: TypeName? = null, build: A
         }
 
 // AbsType
+inline fun AbsType.constructor(vararg params: Parameter, primary: Boolean = false, crossinline build: Constructor.(List<Parameter>) -> Unit) {
+    val c = Constructor()
+    c.(build)(c.parameters(*params))
+
+    if (primary) {
+        builder.primaryConstructor(c.spec)
+    } else {
+        add(c)
+    }
+}
+
 inline fun <reified R: Any> AbsType.override(func: KFunction<R>, crossinline build: AbsCallable.(List<Parameter>) -> Unit)
         = Function(func.name).also { f ->
             f.modifier(KModifier.OVERRIDE)

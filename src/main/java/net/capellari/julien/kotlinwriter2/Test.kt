@@ -35,6 +35,27 @@ fun test() {
                 }
             }
 
+            // Constructors
+            constructor("handle" of Long::class, primary = true) {
+                modifier(KModifier.INTERNAL)
+            }
+
+            constructor {
+                this_("create(${(0 until 2).joinToString(", ") { "0" }})")
+            }
+
+            constructor(*coords) {
+                this_("create(${coords.joinToString(", ")}")
+            }
+
+            constructor("factors" of numberArray) { (factors) ->
+                this_("createA($factors)")
+            }
+
+            constructor("pt" of clsName) { (pt) ->
+                this_("createC($pt)")
+            }
+
             // Native methods
             val getDataA = function("getDataA", returns = numberArray) {
                 modifier(KModifier.PRIVATE, KModifier.EXTERNAL)
@@ -83,7 +104,7 @@ fun test() {
 
         // Utils
         function("point", *coords, returns = clsName) { params ->
-            + "return $clsName(${params.joinToString(", ") { it.name }})"
+            + "return $clsName(${params.joinToString(", ")})"
         }
     }
 }
