@@ -1,16 +1,12 @@
-package net.capellari.julien.kotlinwriter
+package net.capellari.julien.kotlinwriter.bases.function
 
 import com.squareup.kotlinpoet.CodeBlock
+import com.squareup.kotlinpoet.FunSpec
 import net.capellari.julien.kotlinwriter.bases.AbsCodable
-import net.capellari.julien.kotlinwriter.bases.Wrapper
 
-@KotlinMarker
-class Code: AbsCodable(), Wrapper<CodeBlock> {
-    // Attributes
-    val builder = CodeBlock.builder()
-
+abstract class AbsCallable(override val builder: FunSpec.Builder): AbsCodable(), Callable {
     // Properties
-    override val spec: CodeBlock get() {
+    override val spec: FunSpec get() {
         this.buildFlow()
         return builder.build()
     }
@@ -18,11 +14,11 @@ class Code: AbsCodable(), Wrapper<CodeBlock> {
     // Methods
     override fun add(code: String) {
         this.buildFlow()
-        builder.add(code)
+        builder.addCode(code + "\n")
     }
     override fun add(code: CodeBlock) {
         this.buildFlow()
-        builder.add(code)
+        builder.addCode(code)
     }
 
     override fun beginFlow(code: String) {

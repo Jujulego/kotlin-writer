@@ -1,42 +1,52 @@
 package net.capellari.julien.kotlinwriter
 
-import com.squareup.kotlinpoet.*
-import net.capellari.julien.kotlinwriter.function.AbsFunction
-import net.capellari.julien.kotlinwriter.bases.AbsWrapper
-import net.capellari.julien.kotlinwriter.interfaces.Annotable
-import net.capellari.julien.kotlinwriter.interfaces.Modifiable
-import net.capellari.julien.kotlinwriter.function.Parameters
-import kotlin.reflect.KClass
+import com.squareup.kotlinpoet.ClassName
+import com.squareup.kotlinpoet.KModifier
+import com.squareup.kotlinpoet.PropertySpec
+import com.squareup.kotlinpoet.TypeName
+import net.capellari.julien.kotlinwriter.bases.function.AbsCallable
+import net.capellari.julien.kotlinwriter.bases.property.Getter
+import net.capellari.julien.kotlinwriter.bases.property.Property
+import net.capellari.julien.kotlinwriter.bases.property.Receiver
+import net.capellari.julien.kotlinwriter.bases.property.Setter
 
-@KotlinMarker
-class Property(name: String, type: TypeName):
-        AbsWrapper<PropertySpec,PropertySpec.Builder>(PropertySpec.builder(name, type)),
-        Annotable, Modifiable {
+class Property(override val name: String, val type: TypeName): Property, Receiver {
+    // Attributes
+    override val builder = PropertySpec.builder(name, type)
 
-    // Propriétés
+    // Properties
     override val spec get() = builder.build()
+    override var mutable = false
+        set(m) { field = m
+            builder.mutable(m)
+        }
 
-    // Méthodes
-    // - annotations
-    override fun annotation(type: ClassName) {
-        builder.addAnnotation(type)
+    // Methods
+    override fun toString() = name
+
+    override fun annotate(annotation: ClassName) {
+        builder.addAnnotation(annotation)
     }
 
-    // - modifiers
-    override fun modifiers(vararg modifiers: KModifier) {
-        builder.addModifiers(*modifiers)
+    override fun modifier(modifier: KModifier) {
+        builder.addModifiers(modifier)
     }
 
-    // - accesseurs
-    fun getter(build: Getter.() -> Unit) {
-        builder.getter(Getter().apply(build).spec)
+    override fun init(code: String) {
+        builder.initializer(code)
     }
 
-    fun setter(build: Setter.() -> Unit) {
-        builder.getter(Setter().apply(build).spec)
-    }
+    override fun getter(build: AbsCallable.() -> Unit) {
+        val g = Getter()
+        g.(build)()
 
-    // Classes
-    class Getter : AbsFunction(FunSpec.getterBuilder())
-    class Setter : AbsFunction(FunSpec.setterBuilder()), Parameters
+        builder.getter(g.spec)
+    }
+    override fun setter(parameter: Parameter, build: AbsCallable.(Parameter) -> Unit) {
+        val s = Setter()
+        val p = s.parameter(parameter)
+        s.(build)(p)
+
+        builder.getter(s.spec)
+    }
 }

@@ -1,31 +1,36 @@
 package net.capellari.julien.kotlinwriter
 
-import com.squareup.kotlinpoet.*
-import net.capellari.julien.kotlinwriter.bases.AbsWrapper
-import net.capellari.julien.kotlinwriter.interfaces.Annotable
-import net.capellari.julien.kotlinwriter.interfaces.Commentable
-import net.capellari.julien.kotlinwriter.interfaces.Container
-import kotlin.reflect.KClass
+import com.squareup.kotlinpoet.ClassName
+import com.squareup.kotlinpoet.FileSpec
+import com.squareup.kotlinpoet.MemberName
+import net.capellari.julien.kotlinwriter.bases.Wrapper
+import net.capellari.julien.kotlinwriter.bases.function.AbsCallable
+import net.capellari.julien.kotlinwriter.bases.property.Property
+import net.capellari.julien.kotlinwriter.bases.type.AbsContainer
+import net.capellari.julien.kotlinwriter.bases.type.AbsType
 
-@KotlinMarker
-class File(pkg: String, name: String): AbsWrapper<FileSpec,FileSpec.Builder>(FileSpec.builder(pkg, name)),
-        Annotable, Commentable, Container {
+class File(pkg: String, name: String): AbsContainer(), Wrapper<FileSpec> {
+    // Attributs
+    val builder = FileSpec.builder(pkg, name)
 
-    // Propriétés
+    // Properties
     override val spec get() = builder.build()
 
-    // Méthodes
-    // - annotation
-    override fun annotation(type: ClassName) {
-        builder.addAnnotation(type)
+    // Methods
+    override fun annotate(annotation: ClassName) {
+        builder.addAnnotation(annotation)
     }
 
-    // - comment
-    override fun comment(format: String, vararg args: Any) {
-        builder.addComment(format, *args)
+    override fun add(func: AbsCallable) {
+        builder.addFunction(func.spec)
+    }
+    override fun add(type: AbsType) {
+        builder.addType(type.spec)
+    }
+    override fun add(prop: Property) {
+        builder.addProperty(prop.spec)
     }
 
-    // - imports
     fun import(pkg: String, name: String, alias: String? = null) {
         if (alias == null) {
             builder.addImport(pkg, name)
@@ -33,58 +38,4 @@ class File(pkg: String, name: String): AbsWrapper<FileSpec,FileSpec.Builder>(Fil
             builder.addAliasedImport(MemberName(pkg, name), alias)
         }
     }
-    fun imports(pkg: String, vararg names: Pair<String,String?>) {
-        for (name in names) {
-            import(pkg, name.first, name.second)
-        }
-    }
-
-    fun import(name: ClassName, alias: String? = null) {
-        if (alias == null) {
-            builder.addImport(name.packageName, name.simpleName)
-        } else {
-            builder.addAliasedImport(name, alias)
-        }
-    }
-    fun import(cls: KClass<*>, alias: String? = null) {
-        if (alias == null) {
-            val name = cls.asClassName()
-            builder.addImport(name.packageName, name.simpleName)
-        } else {
-            builder.addAliasedImport(cls, alias)
-        }
-    }
-
-    // - types
-    fun addClass(name: ClassName, build: Class.() -> Unit)
-            = Class(name).apply(build).spec.also { builder.addType(it) }
-
-    fun addClass(name: String, build: Class.() -> Unit)
-            = Class(name).apply(build).spec.also { builder.addType(it) }
-
-    fun addEnum(name: ClassName, build: Enum.() -> Unit)
-            = Enum(name).apply(build).spec.also { builder.addType(it) }
-
-    fun addEnum(name: String, build: Enum.() -> Unit)
-            = Enum(name).apply(build).spec.also { builder.addType(it) }
-
-    fun addObject(name: ClassName, build: Object.() -> Unit)
-            = Object(name).apply(build).spec.also { builder.addType(it) }
-
-    fun addObject(name: String, build: Object.() -> Unit)
-            = Object(name).apply(build).spec.also { builder.addType(it) }
-
-    fun addAlias(name: String, type: TypeName, build: TypeAlias.() -> Unit)
-            = TypeAlias(name, type).apply(build).spec.also { builder.addTypeAlias(it) }
-
-    fun addAlias(name: String, type: KClass<*>, build: TypeAlias.() -> Unit)
-            = TypeAlias(name, type).apply(build).spec.also { builder.addTypeAlias(it) }
-
-    // - propriétés
-    override fun property(name: String, type: TypeName, build: Property.() -> Unit)
-            = Property(name, type).apply(build).spec.also { builder.addProperty(it) }
-
-    // - fonctions
-    override fun function(name: String, build: Function.() -> Unit)
-            = Function(name).apply(build).spec.also { builder.addFunction(it) }
 }
