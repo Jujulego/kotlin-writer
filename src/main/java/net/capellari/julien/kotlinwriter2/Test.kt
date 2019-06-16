@@ -61,11 +61,11 @@ fun test() {
                 modifier(KModifier.PRIVATE, KModifier.EXTERNAL)
             }
 
-            function("getCoord", "i" of Int::class, returns = number) {
+            val getCoord = function("getCoord", "i" of Int::class, returns = number) {
                 modifier(KModifier.PRIVATE, KModifier.EXTERNAL)
             }
 
-            function("setCoord", "i" of Int::class, "v" of number) {
+            val setCoord = function("setCoord", "i" of Int::class, "v" of number) {
                 modifier(KModifier.PRIVATE, KModifier.EXTERNAL)
             }
 
@@ -78,6 +78,21 @@ fun test() {
                 getter {
                     + "returns $getDataA()"
                 }
+            }
+
+            // Operators
+            get("i" of Int::class, returns = number) { (i) ->
+                + "return $getCoord($i)"
+            }
+            set("i" of Int::class, "v" of number) { (i, v) ->
+                + "return $setCoord($i, $v)"
+            }
+
+            unaryPlus(returns = clsName) {
+                + "return $clsName(this)"
+            }
+            unaryMinus(returns = clsName) {
+                + "return $clsName(${(0 until 2).joinToString(", ") { "-this[$it]" }})"
             }
 
             // Methods
