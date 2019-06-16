@@ -38,7 +38,6 @@ class Property(override val name: String, val type: TypeName): Property, Receive
 
     override fun getter(build: AbsCallable.() -> Unit) {
         val g = Getter()
-        g.returns(type)
         g.(build)()
 
         builder.getter(g.spec)

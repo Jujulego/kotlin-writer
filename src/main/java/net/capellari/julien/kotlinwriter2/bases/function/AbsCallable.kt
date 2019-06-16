@@ -14,7 +14,7 @@ abstract class AbsCallable(override val builder: FunSpec.Builder): AbsCodable(),
     // Methods
     override fun add(code: String) {
         this.buildFlow()
-        builder.addCode(code)
+        builder.addCode(code + "\n")
     }
     override fun add(code: CodeBlock) {
         this.buildFlow()

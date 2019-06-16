@@ -255,10 +255,10 @@ inline fun AbsType.compareTo(vararg params: Parameter, receiver: KClass<*>, cros
 
 // File
 fun createFile(pkg: String, name: String, build: File.() -> Unit)
-        = File(pkg, name).apply(build).spec
+        = File(pkg, name).apply(build)
 
 fun createFile(cls: ClassName, build: File.() -> Unit)
-        = File(cls.packageName, cls.simpleName).apply(build).spec
+        = File(cls.packageName, cls.simpleName).apply(build)
 
 fun File.import(name: ClassName, alias: String? = null)
         = import(name.packageName, name.simpleName, alias)
