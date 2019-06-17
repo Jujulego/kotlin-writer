@@ -19,11 +19,11 @@ fun Annotable.annotate(type: KClass<*>) = annotate(type.asClassName())
 inline fun <reified T: Annotation> Annotable.annotate() = annotate(T::class.asClassName())
 
 // Container
-fun AbsContainer.class_(name: String, build: Class.() -> Unit)
-        = Class(name).apply(build).also { add(it) }
-
-fun AbsContainer.class_(name: ClassName, build: Class.() -> Unit)
-        = Class(name.simpleName).apply(build).also { add(it) }
+fun AbsContainer.class_(name: String, build: Class.(Class) -> Unit)
+        = Class(containerName, name).also {
+            it.(build)(it)
+            add(it)
+        }
 
 fun AbsContainer.function(name: String, vararg params: Parameter, receiver: TypeName? = null, returns: TypeName? = null, build: AbsCallable.(List<Parameter>) -> Unit = {}): Function
         = Function(name).also { f ->
@@ -36,10 +36,20 @@ fun AbsContainer.function(name: String, vararg params: Parameter, receiver: Type
 
 fun AbsContainer.function(name: String, vararg params: Parameter, receiver: KClass<*>, returns: TypeName? = null, build: AbsCallable.(List<Parameter>) -> Unit = {})
         = function(name, *params, receiver = receiver.asTypeName(), returns = returns, build = build)
+fun AbsContainer.function(name: String, vararg params: Parameter, receiver: AbsType, returns: TypeName? = null, build: AbsCallable.(List<Parameter>) -> Unit = {})
+        = function(name, *params, receiver = receiver.typeName, returns = returns, build = build)
 fun AbsContainer.function(name: String, vararg params: Parameter, receiver: TypeName? = null, returns: KClass<*>, build: AbsCallable.(List<Parameter>) -> Unit = {})
         = function(name, *params, receiver = receiver, returns = returns.asTypeName(), build = build)
 fun AbsContainer.function(name: String, vararg params: Parameter, receiver: KClass<*>, returns: KClass<*>, build: AbsCallable.(List<Parameter>) -> Unit = {})
         = function(name, *params, receiver = receiver.asTypeName(), returns = returns.asTypeName(), build = build)
+fun AbsContainer.function(name: String, vararg params: Parameter, receiver: AbsType, returns: KClass<*>, build: AbsCallable.(List<Parameter>) -> Unit = {})
+        = function(name, *params, receiver = receiver.typeName, returns = returns.asTypeName(), build = build)
+fun AbsContainer.function(name: String, vararg params: Parameter, receiver: TypeName? = null, returns: AbsType, build: AbsCallable.(List<Parameter>) -> Unit = {})
+        = function(name, *params, receiver = receiver, returns = returns.typeName, build = build)
+fun AbsContainer.function(name: String, vararg params: Parameter, receiver: KClass<*>, returns: AbsType, build: AbsCallable.(List<Parameter>) -> Unit = {})
+        = function(name, *params, receiver = receiver.asTypeName(), returns = returns.typeName, build = build)
+fun AbsContainer.function(name: String, vararg params: Parameter, receiver: AbsType, returns: AbsType, build: AbsCallable.(List<Parameter>) -> Unit = {})
+        = function(name, *params, receiver = receiver.typeName, returns = returns.typeName, build = build)
 
 fun AbsContainer.property(param: Parameter, receiver: TypeName? = null, build: AbsProperty.() -> Unit = {})
         = Property(param.name, param.type).also { p ->
@@ -49,6 +59,10 @@ fun AbsContainer.property(param: Parameter, receiver: TypeName? = null, build: A
             p.(build)()
             add(p)
         }
+fun AbsContainer.property(param: Parameter, receiver: KClass<*>, build: AbsProperty.() -> Unit = {})
+        = property(param, receiver.asTypeName(), build)
+fun AbsContainer.property(param: Parameter, receiver: AbsType, build: AbsProperty.() -> Unit = {})
+        = property(param, receiver.typeName, build)
 
 // AbsType
 inline fun AbsType.constructor(vararg params: Parameter, primary: Boolean = false, crossinline build: Constructor.(List<Parameter>) -> Unit) {
@@ -94,163 +108,20 @@ inline fun AbsType.operator(name: String, vararg params: Parameter, receiver: Ty
 
 inline fun AbsType.operator(name: String, vararg params: Parameter, receiver: KClass<*>, returns: TypeName? = null, crossinline build: AbsCallable.(List<Parameter>) -> Unit)
         = operator(name, *params, receiver = receiver.asTypeName(), returns = returns, build = build)
+inline fun AbsType.operator(name: String, vararg params: Parameter, receiver: AbsType, returns: TypeName? = null, crossinline build: AbsCallable.(List<Parameter>) -> Unit)
+        = operator(name, *params, receiver = receiver.typeName, returns = returns, build = build)
 inline fun AbsType.operator(name: String, vararg params: Parameter, receiver: TypeName? = null, returns: KClass<*>, crossinline build: AbsCallable.(List<Parameter>) -> Unit)
         = operator(name, *params, receiver = receiver, returns = returns.asTypeName(), build = build)
 inline fun AbsType.operator(name: String, vararg params: Parameter, receiver: KClass<*>, returns: KClass<*>, crossinline build: AbsCallable.(List<Parameter>) -> Unit)
         = operator(name, *params, receiver = receiver.asTypeName(), returns = returns.asTypeName(), build = build)
-
-inline fun AbsType.not(returns: TypeName, receiver: TypeName? = null, crossinline build: AbsCallable.() -> Unit)
-        = operator("not", receiver = receiver, returns = returns, build = { build() })
-inline fun AbsType.not(returns: KClass<*>, receiver: TypeName? = null, crossinline build: AbsCallable.() -> Unit)
-        = operator("not", receiver = receiver, returns = returns, build = { build() })
-inline fun AbsType.not(returns: TypeName, receiver: KClass<*>, crossinline build: AbsCallable.() -> Unit)
-        = operator("not", receiver = receiver, returns = returns, build = { build() })
-inline fun AbsType.not(returns: KClass<*>, receiver: KClass<*>, crossinline build: AbsCallable.() -> Unit)
-        = operator("not", receiver = receiver, returns = returns, build = { build() })
-
-inline fun AbsType.unaryPlus(returns: TypeName, receiver: TypeName? = null, crossinline build: AbsCallable.() -> Unit)
-        = operator("unaryPlus", receiver = receiver, returns = returns, build = { build() })
-inline fun AbsType.unaryPlus(returns: KClass<*>, receiver: TypeName? = null, crossinline build: AbsCallable.() -> Unit)
-        = operator("unaryPlus", receiver = receiver, returns = returns, build = { build() })
-inline fun AbsType.unaryPlus(returns: TypeName, receiver: KClass<*>, crossinline build: AbsCallable.() -> Unit)
-        = operator("unaryPlus", receiver = receiver, returns = returns, build = { build() })
-inline fun AbsType.unaryPlus(returns: KClass<*>, receiver: KClass<*>, crossinline build: AbsCallable.() -> Unit)
-        = operator("unaryPlus", receiver = receiver, returns = returns, build = { build() })
-
-inline fun AbsType.unaryMinus(returns: TypeName, receiver: TypeName? = null, crossinline build: AbsCallable.() -> Unit)
-        = operator("unaryMinus", receiver = receiver, returns = returns, build = { build() })
-inline fun AbsType.unaryMinus(returns: KClass<*>, receiver: TypeName? = null, crossinline build: AbsCallable.() -> Unit)
-        = operator("unaryMinus", receiver = receiver, returns = returns, build = { build() })
-inline fun AbsType.unaryMinus(returns: TypeName, receiver: KClass<*>, crossinline build: AbsCallable.() -> Unit)
-        = operator("unaryMinus", receiver = receiver, returns = returns, build = { build() })
-inline fun AbsType.unaryMinus(returns: KClass<*>, receiver: KClass<*>, crossinline build: AbsCallable.() -> Unit)
-        = operator("unaryMinus", receiver = receiver, returns = returns, build = { build() })
-
-inline fun AbsType.inc(returns: TypeName, receiver: TypeName? = null, crossinline build: AbsCallable.() -> Unit)
-        = operator("inc", receiver = receiver, returns = returns, build = { build() })
-inline fun AbsType.inc(returns: TypeName, receiver: KClass<*>, crossinline build: AbsCallable.() -> Unit)
-        = operator("inc", receiver = receiver, returns = returns, build = { build() })
-
-inline fun AbsType.dec(returns: TypeName, receiver: TypeName? = null, crossinline build: AbsCallable.() -> Unit)
-        = operator("dec", receiver = receiver, returns = returns, build = { build() })
-inline fun AbsType.dec(returns: TypeName, receiver: KClass<*>, crossinline build: AbsCallable.() -> Unit)
-        = operator("dec", receiver = receiver, returns = returns, build = { build() })
-
-inline fun AbsType.plus(param: Parameter, returns: TypeName, receiver: TypeName? = null, crossinline build: AbsCallable.(List<Parameter>) -> Unit)
-        = operator("plus", param, receiver = receiver, returns = returns, build = build)
-inline fun AbsType.plus(param: Parameter, returns: KClass<*>, receiver: TypeName? = null, crossinline build: AbsCallable.(List<Parameter>) -> Unit)
-        = operator("plus", param, receiver = receiver, returns = returns, build = build)
-inline fun AbsType.plus(param: Parameter, returns: TypeName, receiver: KClass<*>, crossinline build: AbsCallable.(List<Parameter>) -> Unit)
-        = operator("plus", param, receiver = receiver, returns = returns, build = build)
-inline fun AbsType.plus(param: Parameter, returns: KClass<*>, receiver: KClass<*>, crossinline build: AbsCallable.(List<Parameter>) -> Unit)
-        = operator("plus", param, receiver = receiver, returns = returns, build = build)
-
-inline fun AbsType.minus(param: Parameter, returns: TypeName, receiver: TypeName? = null, crossinline build: AbsCallable.(List<Parameter>) -> Unit)
-        = operator("minus", param, receiver = receiver, returns = returns, build = build)
-inline fun AbsType.minus(param: Parameter, returns: KClass<*>, receiver: TypeName? = null, crossinline build: AbsCallable.(List<Parameter>) -> Unit)
-        = operator("minus", param, receiver = receiver, returns = returns, build = build)
-inline fun AbsType.minus(param: Parameter, returns: TypeName, receiver: KClass<*>, crossinline build: AbsCallable.(List<Parameter>) -> Unit)
-        = operator("minus", param, receiver = receiver, returns = returns, build = build)
-inline fun AbsType.minus(param: Parameter, returns: KClass<*>, receiver: KClass<*>, crossinline build: AbsCallable.(List<Parameter>) -> Unit)
-        = operator("minus", param, receiver = receiver, returns = returns, build = build)
-
-inline fun AbsType.times(param: Parameter, returns: TypeName, receiver: TypeName? = null, crossinline build: AbsCallable.(List<Parameter>) -> Unit)
-        = operator("times", param, receiver = receiver, returns = returns, build = build)
-inline fun AbsType.times(param: Parameter, returns: KClass<*>, receiver: TypeName? = null, crossinline build: AbsCallable.(List<Parameter>) -> Unit)
-        = operator("times", param, receiver = receiver, returns = returns, build = build)
-inline fun AbsType.times(param: Parameter, returns: TypeName, receiver: KClass<*>, crossinline build: AbsCallable.(List<Parameter>) -> Unit)
-        = operator("times", param, receiver = receiver, returns = returns, build = build)
-inline fun AbsType.times(param: Parameter, returns: KClass<*>, receiver: KClass<*>, crossinline build: AbsCallable.(List<Parameter>) -> Unit)
-        = operator("times", param, receiver = receiver, returns = returns, build = build)
-
-inline fun AbsType.div(param: Parameter, returns: TypeName, receiver: TypeName? = null, crossinline build: AbsCallable.(List<Parameter>) -> Unit)
-        = operator("div", param, receiver = receiver, returns = returns, build = build)
-inline fun AbsType.div(param: Parameter, returns: KClass<*>, receiver: TypeName? = null, crossinline build: AbsCallable.(List<Parameter>) -> Unit)
-        = operator("div", param, receiver = receiver, returns = returns, build = build)
-inline fun AbsType.div(param: Parameter, returns: TypeName, receiver: KClass<*>, crossinline build: AbsCallable.(List<Parameter>) -> Unit)
-        = operator("div", param, receiver = receiver, returns = returns, build = build)
-inline fun AbsType.div(param: Parameter, returns: KClass<*>, receiver: KClass<*>, crossinline build: AbsCallable.(List<Parameter>) -> Unit)
-        = operator("div", param, receiver = receiver, returns = returns, build = build)
-
-inline fun AbsType.rem(param: Parameter, returns: TypeName, receiver: TypeName? = null, crossinline build: AbsCallable.(List<Parameter>) -> Unit)
-        = operator("rem", param, receiver = receiver, returns = returns, build = build)
-inline fun AbsType.rem(param: Parameter, returns: KClass<*>, receiver: TypeName? = null, crossinline build: AbsCallable.(List<Parameter>) -> Unit)
-        = operator("rem", param, receiver = receiver, returns = returns, build = build)
-inline fun AbsType.rem(param: Parameter, returns: TypeName, receiver: KClass<*>, crossinline build: AbsCallable.(List<Parameter>) -> Unit)
-        = operator("rem", param, receiver = receiver, returns = returns, build = build)
-inline fun AbsType.rem(param: Parameter, returns: KClass<*>, receiver: KClass<*>, crossinline build: AbsCallable.(List<Parameter>) -> Unit)
-        = operator("rem", param, receiver = receiver, returns = returns, build = build)
-
-inline fun AbsType.rangeTo(param: Parameter, returns: TypeName, receiver: TypeName? = null, crossinline build: AbsCallable.(List<Parameter>) -> Unit)
-        = operator("rangeTo", param, receiver = receiver, returns = returns, build = build)
-inline fun AbsType.rangeTo(param: Parameter, returns: KClass<*>, receiver: TypeName? = null, crossinline build: AbsCallable.(List<Parameter>) -> Unit)
-        = operator("rangeTo", param, receiver = receiver, returns = returns, build = build)
-inline fun AbsType.rangeTo(param: Parameter, returns: TypeName, receiver: KClass<*>, crossinline build: AbsCallable.(List<Parameter>) -> Unit)
-        = operator("rangeTo", param, receiver = receiver, returns = returns, build = build)
-inline fun AbsType.rangeTo(param: Parameter, returns: KClass<*>, receiver: KClass<*>, crossinline build: AbsCallable.(List<Parameter>) -> Unit)
-        = operator("rangeTo", param, receiver = receiver, returns = returns, build = build)
-
-inline fun AbsType.contains(param: Parameter, returns: TypeName, receiver: TypeName? = null, crossinline build: AbsCallable.(List<Parameter>) -> Unit)
-        = operator("contains", param, receiver = receiver, returns = returns, build = build)
-inline fun AbsType.contains(param: Parameter, returns: KClass<*>, receiver: TypeName? = null, crossinline build: AbsCallable.(List<Parameter>) -> Unit)
-        = operator("contains", param, receiver = receiver, returns = returns, build = build)
-inline fun AbsType.contains(param: Parameter, returns: TypeName, receiver: KClass<*>, crossinline build: AbsCallable.(List<Parameter>) -> Unit)
-        = operator("contains", param, receiver = receiver, returns = returns, build = build)
-inline fun AbsType.contains(param: Parameter, returns: KClass<*>, receiver: KClass<*>, crossinline build: AbsCallable.(List<Parameter>) -> Unit)
-        = operator("contains", param, receiver = receiver, returns = returns, build = build)
-
-inline fun AbsType.get(vararg params: Parameter, returns: TypeName, receiver: TypeName? = null, crossinline build: AbsCallable.(List<Parameter>) -> Unit)
-        = operator("get", *params, receiver = receiver, returns = returns, build = build)
-inline fun AbsType.get(vararg params: Parameter, returns: KClass<*>, receiver: TypeName? = null, crossinline build: AbsCallable.(List<Parameter>) -> Unit)
-        = operator("get", *params, receiver = receiver, returns = returns, build = build)
-inline fun AbsType.get(vararg params: Parameter, returns: TypeName, receiver: KClass<*>, crossinline build: AbsCallable.(List<Parameter>) -> Unit)
-        = operator("get", *params, receiver = receiver, returns = returns, build = build)
-inline fun AbsType.get(vararg params: Parameter, returns: KClass<*>, receiver: KClass<*>, crossinline build: AbsCallable.(List<Parameter>) -> Unit)
-        = operator("get", *params, receiver = receiver, returns = returns, build = build)
-
-inline fun AbsType.set(vararg params: Parameter, receiver: TypeName? = null, crossinline build: AbsCallable.(List<Parameter>) -> Unit)
-        = operator("set", *params, receiver = receiver, build = build)
-inline fun AbsType.set(vararg params: Parameter, receiver: KClass<*>, crossinline build: AbsCallable.(List<Parameter>) -> Unit)
-        = operator("set", *params, receiver = receiver, build = build)
-
-inline fun AbsType.invoke(vararg params: Parameter, returns: TypeName, receiver: TypeName? = null, crossinline build: AbsCallable.(List<Parameter>) -> Unit)
-        = operator("invoke", *params, receiver = receiver, returns = returns, build = build)
-inline fun AbsType.invoke(vararg params: Parameter, returns: KClass<*>, receiver: TypeName? = null, crossinline build: AbsCallable.(List<Parameter>) -> Unit)
-        = operator("invoke", *params, receiver = receiver, returns = returns, build = build)
-inline fun AbsType.invoke(vararg params: Parameter, returns: TypeName, receiver: KClass<*>, crossinline build: AbsCallable.(List<Parameter>) -> Unit)
-        = operator("invoke", *params, receiver = receiver, returns = returns, build = build)
-inline fun AbsType.invoke(vararg params: Parameter, returns: KClass<*>, receiver: KClass<*>, crossinline build: AbsCallable.(List<Parameter>) -> Unit)
-        = operator("invoke", *params, receiver = receiver, returns = returns, build = build)
-
-inline fun AbsType.plusAssign(param: Parameter, receiver: TypeName? = null, crossinline build: AbsCallable.(List<Parameter>) -> Unit)
-        = operator("plusAssign", param, receiver = receiver, build = build)
-inline fun AbsType.plusAssign(param: Parameter, receiver: KClass<*>, crossinline build: AbsCallable.(List<Parameter>) -> Unit)
-        = operator("plusAssign", param, receiver = receiver, build = build)
-
-inline fun AbsType.minusAssign(param: Parameter, receiver: TypeName? = null, crossinline build: AbsCallable.(List<Parameter>) -> Unit)
-        = operator("minusAssign", param, receiver = receiver, build = build)
-inline fun AbsType.minusAssign(param: Parameter, receiver: KClass<*>, crossinline build: AbsCallable.(List<Parameter>) -> Unit)
-        = operator("minusAssign", param, receiver = receiver, build = build)
-
-inline fun AbsType.timesAssign(param: Parameter, receiver: TypeName? = null, crossinline build: AbsCallable.(List<Parameter>) -> Unit)
-        = operator("timesAssign", param, receiver = receiver, build = build)
-inline fun AbsType.timesAssign(param: Parameter, receiver: KClass<*>, crossinline build: AbsCallable.(List<Parameter>) -> Unit)
-        = operator("timesAssign", param, receiver = receiver, build = build)
-
-inline fun AbsType.divAssign(param: Parameter, receiver: TypeName? = null, crossinline build: AbsCallable.(List<Parameter>) -> Unit)
-        = operator("divAssign", param, receiver = receiver, build = build)
-inline fun AbsType.divAssign(param: Parameter, receiver: KClass<*>, crossinline build: AbsCallable.(List<Parameter>) -> Unit)
-        = operator("divAssign", param, receiver = receiver, build = build)
-
-inline fun AbsType.remAssign(param: Parameter, receiver: TypeName? = null, crossinline build: AbsCallable.(List<Parameter>) -> Unit)
-        = operator("remAssign", param, receiver = receiver, build = build)
-inline fun AbsType.remAssign(param: Parameter, receiver: KClass<*>, crossinline build: AbsCallable.(List<Parameter>) -> Unit)
-        = operator("remAssign", param, receiver = receiver, build = build)
-
-inline fun AbsType.compareTo(vararg params: Parameter, receiver: TypeName? = null, crossinline build: AbsCallable.(List<Parameter>) -> Unit)
-        = operator("compareTo", *params, receiver = receiver, returns = Int::class, build = build)
-inline fun AbsType.compareTo(vararg params: Parameter, receiver: KClass<*>, crossinline build: AbsCallable.(List<Parameter>) -> Unit)
-        = operator("compareTo", *params, receiver = receiver, returns = Int::class, build = build)
+inline fun AbsType.operator(name: String, vararg params: Parameter, receiver: AbsType, returns: KClass<*>, crossinline build: AbsCallable.(List<Parameter>) -> Unit)
+        = operator(name, *params, receiver = receiver.typeName, returns = returns.asTypeName(), build = build)
+inline fun AbsType.operator(name: String, vararg params: Parameter, receiver: TypeName? = null, returns: AbsType, crossinline build: AbsCallable.(List<Parameter>) -> Unit)
+        = operator(name, *params, receiver = receiver, returns = returns.typeName, build = build)
+inline fun AbsType.operator(name: String, vararg params: Parameter, receiver: KClass<*>, returns: AbsType, crossinline build: AbsCallable.(List<Parameter>) -> Unit)
+        = operator(name, *params, receiver = receiver.asTypeName(), returns = returns.typeName, build = build)
+inline fun AbsType.operator(name: String, vararg params: Parameter, receiver: AbsType, returns: AbsType, crossinline build: AbsCallable.(List<Parameter>) -> Unit)
+        = operator(name, *params, receiver = receiver.typeName, returns = returns.typeName, build = build)
 
 // File
 fun createFile(pkg: String, name: String, build: File.() -> Unit)
@@ -258,6 +129,12 @@ fun createFile(pkg: String, name: String, build: File.() -> Unit)
 
 fun createFile(cls: ClassName, build: File.() -> Unit)
         = File(cls.packageName, cls.simpleName).apply(build)
+
+fun File.class_(build: Class.(Class) -> Unit): Class
+        = class_(name, build)
+
+fun File.import(file: File, name: String? = null, alias: String? = null)
+        = import(file.pkg, name ?: file.name, alias)
 
 fun File.import(name: ClassName, alias: String? = null)
         = import(name.packageName, name.simpleName, alias)
@@ -275,6 +152,7 @@ fun<T: Any> KClass<T>.asNullableTypeName(nullable: Boolean = true)
 // Parameter
 infix fun String.of(type: TypeName)  = Parameter(this, type)
 infix fun String.of(type: KClass<*>) = Parameter(this, type.asTypeName())
+infix fun String.of(type: AbsType)   = Parameter(this, type.typeName)
 
 infix fun Parameter.default(value: Named)  = also { default(value) }
 infix fun Parameter.default(value: Number) = also { default(value) }

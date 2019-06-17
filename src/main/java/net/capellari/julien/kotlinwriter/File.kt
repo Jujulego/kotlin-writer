@@ -9,12 +9,13 @@ import net.capellari.julien.kotlinwriter.bases.property.Property
 import net.capellari.julien.kotlinwriter.bases.type.AbsContainer
 import net.capellari.julien.kotlinwriter.bases.type.AbsType
 
-class File(pkg: String, name: String): AbsContainer(), Wrapper<FileSpec> {
+class File(pkg: String, name: String): AbsContainer(pkg, name), Wrapper<FileSpec> {
     // Attributs
     val builder = FileSpec.builder(pkg, name)
 
     // Properties
     override val spec get() = builder.build()
+    override val containerName get() = pkg
 
     // Methods
     override fun annotate(annotation: ClassName) {

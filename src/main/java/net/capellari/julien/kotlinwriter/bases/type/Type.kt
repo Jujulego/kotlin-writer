@@ -13,6 +13,7 @@ interface Type: Wrapper<TypeSpec>, Annotable, Modifiable {
     val builder: TypeSpec.Builder
 
     // Properties
+    val typeName: TypeName
     override val spec get() = builder.build()
 
     // Methods
