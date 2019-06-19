@@ -22,13 +22,13 @@ class File(pkg: String, name: String): AbsContainer(pkg, name), Wrapper<FileSpec
         builder.addAnnotation(annotation)
     }
 
-    override fun add(func: AbsCallable) {
+    override fun addCallable(func: AbsCallable) {
         builder.addFunction(func.spec)
     }
-    override fun add(type: AbsType) {
+    override fun addType(type: AbsType) {
         builder.addType(type.spec)
     }
-    override fun add(prop: Property) {
+    override fun addProperty(prop: Property) {
         builder.addProperty(prop.spec)
     }
 

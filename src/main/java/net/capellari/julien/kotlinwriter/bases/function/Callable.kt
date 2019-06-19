@@ -4,12 +4,10 @@ import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
-import net.capellari.julien.kotlinwriter.bases.Annotable
-import net.capellari.julien.kotlinwriter.bases.Codable
-import net.capellari.julien.kotlinwriter.bases.Modifiable
-import net.capellari.julien.kotlinwriter.bases.Wrapper
+import net.capellari.julien.kotlinwriter.TypeParameter
+import net.capellari.julien.kotlinwriter.bases.*
 
-interface Callable: Wrapper<FunSpec>, Annotable, Modifiable, Codable {
+interface Callable: Wrapper<FunSpec>, Annotable, Templatable, Modifiable, Codable {
     // Attributes
     val builder: FunSpec.Builder
 
@@ -19,6 +17,10 @@ interface Callable: Wrapper<FunSpec>, Annotable, Modifiable, Codable {
     // Methods
     override fun annotate(annotation: ClassName) {
         builder.addAnnotation(annotation)
+    }
+
+    override fun add(tparam: TypeParameter) {
+        builder.addTypeVariable(tparam.typeName)
     }
 
     override fun modifier(modifier: KModifier) {

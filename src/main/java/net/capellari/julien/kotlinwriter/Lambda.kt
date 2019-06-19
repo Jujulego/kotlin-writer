@@ -12,8 +12,6 @@ class Lambda(val returns: TypeName = Unit::class.asTypeName()) : Type {
     val params = mutableListOf<Parameter>()
 
     // Properties
-    override val builder get() = TypeSpec.anonymousClassBuilder()
-
     override val typeName: LambdaTypeName
         get() = LambdaTypeName.get(receiver, params.map { it.spec }, returnType = returns)
 }

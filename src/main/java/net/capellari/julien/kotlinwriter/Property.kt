@@ -4,13 +4,14 @@ import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
+import net.capellari.julien.kotlinwriter.bases.Templatable
 import net.capellari.julien.kotlinwriter.bases.function.AbsCallable
 import net.capellari.julien.kotlinwriter.bases.property.Getter
 import net.capellari.julien.kotlinwriter.bases.property.Property
 import net.capellari.julien.kotlinwriter.bases.property.Receiver
 import net.capellari.julien.kotlinwriter.bases.property.Setter
 
-class Property(override val name: String, val type: TypeName): Property, Receiver {
+class Property(override val name: String, val type: TypeName): Property, Receiver, Templatable {
     // Attributes
     override val builder = PropertySpec.builder(name, type)
 
@@ -26,6 +27,10 @@ class Property(override val name: String, val type: TypeName): Property, Receive
 
     override fun annotate(annotation: ClassName) {
         builder.addAnnotation(annotation)
+    }
+
+    override fun add(tparam: TypeParameter) {
+        builder.addTypeVariable(tparam.typeName)
     }
 
     override fun modifier(modifier: KModifier) {

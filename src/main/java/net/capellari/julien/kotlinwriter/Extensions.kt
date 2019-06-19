@@ -64,7 +64,38 @@ fun AbsContainer.property(param: Parameter, receiver: KClass<*>, build: AbsPrope
 fun AbsContainer.property(param: Parameter, receiver: Type, build: AbsProperty.() -> Unit = {})
         = property(param, receiver.typeName, build)
 
+inline fun <reified T: Templatable> AbsContainer.template(vararg tparams: TypeParameter, crossinline build: (Array<out TypeParameter>) -> T): T
+        = run {
+            templating {
+                build(tparams).apply { tparams.forEach { add(it) } }
+            }.also {
+                when (it) {
+                    is AbsType -> add(it)
+                    is AbsProperty -> add(it)
+                    is AbsCallable -> add(it)
+                }
+            }
+        }
+
 // AbsType
+fun AbsType.superclass(pkg: String, name: String, vararg params: String)
+        = superclass(ClassName(pkg, name), *params)
+
+fun AbsType.superclass(cls: KClass<*>, vararg params: String)
+        = superclass(cls.asTypeName(), *params)
+
+inline fun <reified T: Any> AbsType.superclass(vararg params: String)
+        = superclass(T::class.asTypeName(), *params)
+
+fun AbsType.superinterface(pkg: String, name: String)
+        = superinterface(ClassName(pkg, name))
+
+fun AbsType.superinterface(cls: KClass<*>)
+        = superinterface(cls.asTypeName())
+
+inline fun <reified T: Any> AbsType.superinterface()
+        = superinterface(T::class.asTypeName())
+
 inline fun AbsType.constructor(vararg params: Parameter, primary: Boolean = false, crossinline build: Constructor.(List<Parameter>) -> Unit) {
     val c = Constructor()
     c.(build)(c.parameters(*params))
@@ -200,23 +231,8 @@ inline fun <reified T: Any> Return.returns(nullable: Boolean = false) = returns(
 fun Receiver.receiver(type: KClass<*>, nullable: Boolean = false) = receiver(type.asNullableTypeName(nullable))
 inline fun <reified T: Any> Receiver.receiver(nullable: Boolean = false) = receiver(T::class.asNullableTypeName(nullable))
 
-// Type
-fun Type.superclass(pkg: String, name: String, vararg params: String)
-        = superclass(ClassName(pkg, name), *params)
-
-fun Type.superclass(cls: KClass<*>, vararg params: String)
-        = superclass(cls.asTypeName(), *params)
-
-inline fun <reified T: Any> Type.superclass(vararg params: String)
-        = superclass(T::class.asTypeName(), *params)
-
-fun Type.superinterface(pkg: String, name: String)
-        = superinterface(ClassName(pkg, name))
-
-fun Type.superinterface(cls: KClass<*>)
-        = superinterface(cls.asTypeName())
-
-inline fun <reified T: Any> Type.superinterface()
-        = superinterface(T::class.asTypeName())
-
-
+// TypeParameter
+infix fun String.bound(type: TypeName)  = TypeParameter(this).apply { bounds.add(type) }
+infix fun String.bound(type: KClass<*>) = TypeParameter(this).apply { bounds.add(type.asTypeName()) }
+infix fun String.bound(type: Type)      = TypeParameter(this).apply { bounds.add(type.typeName) }
+infix fun String.bound(@Suppress("UNUSED_PARAMETER") type: Unit) = TypeParameter(this)
