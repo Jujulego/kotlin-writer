@@ -36,19 +36,19 @@ fun AbsContainer.function(name: String, vararg params: Parameter, receiver: Type
 
 fun AbsContainer.function(name: String, vararg params: Parameter, receiver: KClass<*>, returns: TypeName? = null, build: AbsCallable.(List<Parameter>) -> Unit = {})
         = function(name, *params, receiver = receiver.asTypeName(), returns = returns, build = build)
-fun AbsContainer.function(name: String, vararg params: Parameter, receiver: AbsType, returns: TypeName? = null, build: AbsCallable.(List<Parameter>) -> Unit = {})
+fun AbsContainer.function(name: String, vararg params: Parameter, receiver: Type, returns: TypeName? = null, build: AbsCallable.(List<Parameter>) -> Unit = {})
         = function(name, *params, receiver = receiver.typeName, returns = returns, build = build)
 fun AbsContainer.function(name: String, vararg params: Parameter, receiver: TypeName? = null, returns: KClass<*>, build: AbsCallable.(List<Parameter>) -> Unit = {})
         = function(name, *params, receiver = receiver, returns = returns.asTypeName(), build = build)
 fun AbsContainer.function(name: String, vararg params: Parameter, receiver: KClass<*>, returns: KClass<*>, build: AbsCallable.(List<Parameter>) -> Unit = {})
         = function(name, *params, receiver = receiver.asTypeName(), returns = returns.asTypeName(), build = build)
-fun AbsContainer.function(name: String, vararg params: Parameter, receiver: AbsType, returns: KClass<*>, build: AbsCallable.(List<Parameter>) -> Unit = {})
+fun AbsContainer.function(name: String, vararg params: Parameter, receiver: Type, returns: KClass<*>, build: AbsCallable.(List<Parameter>) -> Unit = {})
         = function(name, *params, receiver = receiver.typeName, returns = returns.asTypeName(), build = build)
-fun AbsContainer.function(name: String, vararg params: Parameter, receiver: TypeName? = null, returns: AbsType, build: AbsCallable.(List<Parameter>) -> Unit = {})
+fun AbsContainer.function(name: String, vararg params: Parameter, receiver: TypeName? = null, returns: Type, build: AbsCallable.(List<Parameter>) -> Unit = {})
         = function(name, *params, receiver = receiver, returns = returns.typeName, build = build)
-fun AbsContainer.function(name: String, vararg params: Parameter, receiver: KClass<*>, returns: AbsType, build: AbsCallable.(List<Parameter>) -> Unit = {})
+fun AbsContainer.function(name: String, vararg params: Parameter, receiver: KClass<*>, returns: Type, build: AbsCallable.(List<Parameter>) -> Unit = {})
         = function(name, *params, receiver = receiver.asTypeName(), returns = returns.typeName, build = build)
-fun AbsContainer.function(name: String, vararg params: Parameter, receiver: AbsType, returns: AbsType, build: AbsCallable.(List<Parameter>) -> Unit = {})
+fun AbsContainer.function(name: String, vararg params: Parameter, receiver: Type, returns: Type, build: AbsCallable.(List<Parameter>) -> Unit = {})
         = function(name, *params, receiver = receiver.typeName, returns = returns.typeName, build = build)
 
 fun AbsContainer.property(param: Parameter, receiver: TypeName? = null, build: AbsProperty.() -> Unit = {})
@@ -61,7 +61,7 @@ fun AbsContainer.property(param: Parameter, receiver: TypeName? = null, build: A
         }
 fun AbsContainer.property(param: Parameter, receiver: KClass<*>, build: AbsProperty.() -> Unit = {})
         = property(param, receiver.asTypeName(), build)
-fun AbsContainer.property(param: Parameter, receiver: AbsType, build: AbsProperty.() -> Unit = {})
+fun AbsContainer.property(param: Parameter, receiver: Type, build: AbsProperty.() -> Unit = {})
         = property(param, receiver.typeName, build)
 
 // AbsType
@@ -108,19 +108,19 @@ inline fun AbsType.operator(name: String, vararg params: Parameter, receiver: Ty
 
 inline fun AbsType.operator(name: String, vararg params: Parameter, receiver: KClass<*>, returns: TypeName? = null, crossinline build: AbsCallable.(List<Parameter>) -> Unit)
         = operator(name, *params, receiver = receiver.asTypeName(), returns = returns, build = build)
-inline fun AbsType.operator(name: String, vararg params: Parameter, receiver: AbsType, returns: TypeName? = null, crossinline build: AbsCallable.(List<Parameter>) -> Unit)
+inline fun AbsType.operator(name: String, vararg params: Parameter, receiver: Type, returns: TypeName? = null, crossinline build: AbsCallable.(List<Parameter>) -> Unit)
         = operator(name, *params, receiver = receiver.typeName, returns = returns, build = build)
 inline fun AbsType.operator(name: String, vararg params: Parameter, receiver: TypeName? = null, returns: KClass<*>, crossinline build: AbsCallable.(List<Parameter>) -> Unit)
         = operator(name, *params, receiver = receiver, returns = returns.asTypeName(), build = build)
 inline fun AbsType.operator(name: String, vararg params: Parameter, receiver: KClass<*>, returns: KClass<*>, crossinline build: AbsCallable.(List<Parameter>) -> Unit)
         = operator(name, *params, receiver = receiver.asTypeName(), returns = returns.asTypeName(), build = build)
-inline fun AbsType.operator(name: String, vararg params: Parameter, receiver: AbsType, returns: KClass<*>, crossinline build: AbsCallable.(List<Parameter>) -> Unit)
+inline fun AbsType.operator(name: String, vararg params: Parameter, receiver: Type, returns: KClass<*>, crossinline build: AbsCallable.(List<Parameter>) -> Unit)
         = operator(name, *params, receiver = receiver.typeName, returns = returns.asTypeName(), build = build)
-inline fun AbsType.operator(name: String, vararg params: Parameter, receiver: TypeName? = null, returns: AbsType, crossinline build: AbsCallable.(List<Parameter>) -> Unit)
+inline fun AbsType.operator(name: String, vararg params: Parameter, receiver: TypeName? = null, returns: Type, crossinline build: AbsCallable.(List<Parameter>) -> Unit)
         = operator(name, *params, receiver = receiver, returns = returns.typeName, build = build)
-inline fun AbsType.operator(name: String, vararg params: Parameter, receiver: KClass<*>, returns: AbsType, crossinline build: AbsCallable.(List<Parameter>) -> Unit)
+inline fun AbsType.operator(name: String, vararg params: Parameter, receiver: KClass<*>, returns: Type, crossinline build: AbsCallable.(List<Parameter>) -> Unit)
         = operator(name, *params, receiver = receiver.asTypeName(), returns = returns.typeName, build = build)
-inline fun AbsType.operator(name: String, vararg params: Parameter, receiver: AbsType, returns: AbsType, crossinline build: AbsCallable.(List<Parameter>) -> Unit)
+inline fun AbsType.operator(name: String, vararg params: Parameter, receiver: Type, returns: Type, crossinline build: AbsCallable.(List<Parameter>) -> Unit)
         = operator(name, *params, receiver = receiver.typeName, returns = returns.typeName, build = build)
 
 // File
@@ -149,10 +149,34 @@ inline fun <reified T: Any> File.import(alias: String? = null)
 fun<T: Any> KClass<T>.asNullableTypeName(nullable: Boolean = true)
         = asTypeName().copy(nullable = nullable)
 
+// Lambda
+fun lambda(vararg params: Parameter, receiver: TypeName? = null, returns: TypeName = Unit::class.asTypeName())
+        = Lambda(returns).also {
+            it.params.addAll(params)
+            it.receiver = receiver
+        }
+
+fun lambda(vararg params: Parameter, receiver: KClass<*>, returns: TypeName = Unit::class.asTypeName())
+        = lambda(*params, receiver = receiver.asTypeName(), returns = returns)
+fun lambda(vararg params: Parameter, receiver: Type, returns: TypeName = Unit::class.asTypeName())
+        = lambda(*params, receiver = receiver.typeName, returns = returns)
+fun lambda(vararg params: Parameter, receiver: TypeName? = null, returns: KClass<*>)
+        = lambda(*params, receiver = receiver, returns = returns.asTypeName())
+fun lambda(vararg params: Parameter, receiver: KClass<*>, returns: KClass<*>)
+        = lambda(*params, receiver = receiver.asTypeName(), returns = returns.asTypeName())
+fun lambda(vararg params: Parameter, receiver: Type, returns: KClass<*>)
+        = lambda(*params, receiver = receiver.typeName, returns = returns.asTypeName())
+fun lambda(vararg params: Parameter, receiver: TypeName? = null, returns: Type)
+        = lambda(*params, receiver = receiver, returns = returns.typeName)
+fun lambda(vararg params: Parameter, receiver: KClass<*>, returns: Type)
+        = lambda(*params, receiver = receiver.asTypeName(), returns = returns.typeName)
+fun lambda(vararg params: Parameter, receiver: Type, returns: Type)
+        = lambda(*params, receiver = receiver.typeName, returns = returns.typeName)
+
 // Parameter
 infix fun String.of(type: TypeName)  = Parameter(this, type)
 infix fun String.of(type: KClass<*>) = Parameter(this, type.asTypeName())
-infix fun String.of(type: AbsType)   = Parameter(this, type.typeName)
+infix fun String.of(type: Type)      = Parameter(this, type.typeName)
 
 infix fun Parameter.default(value: Named)  = also { default(value) }
 infix fun Parameter.default(value: Number) = also { default(value) }
