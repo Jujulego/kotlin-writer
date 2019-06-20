@@ -1,12 +1,10 @@
 package net.capellari.julien.kotlinwriter
 
-import com.squareup.kotlinpoet.LambdaTypeName
-import com.squareup.kotlinpoet.TypeName
-import com.squareup.kotlinpoet.TypeSpec
-import com.squareup.kotlinpoet.asTypeName
+import com.squareup.kotlinpoet.*
+import net.capellari.julien.kotlinwriter.bases.type.AbsTypeName
 import net.capellari.julien.kotlinwriter.bases.type.Type
 
-class Lambda(val returns: TypeName = Unit::class.asTypeName()) : Type {
+class Lambda(val returns: TypeName = Unit::class.asTypeName()) : AbsTypeName() {
     // Attributes
     var receiver: TypeName? = null
     val params = mutableListOf<Parameter>()
@@ -14,4 +12,8 @@ class Lambda(val returns: TypeName = Unit::class.asTypeName()) : Type {
     // Properties
     override val typeName: LambdaTypeName
         get() = LambdaTypeName.get(receiver, params.map { it.spec }, returnType = returns)
+            .copy(
+                nullable = nullable,
+                annotations = annotations.map { AnnotationSpec.builder(it).build() }
+            )
 }
