@@ -19,6 +19,7 @@ class Flow(code: String, build: AbsCodable.() -> Unit) {
             }
 
             block.(build)()
+            block.buildFlow()
         }
 
         block.endFlow()

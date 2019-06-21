@@ -235,4 +235,5 @@ inline fun <reified T: Any> Receiver.receiver(nullable: Boolean = false) = recei
 infix fun String.bound(type: TypeName)  = TypeParameter(this).apply { bounds.add(type) }
 infix fun String.bound(type: KClass<*>) = TypeParameter(this).apply { bounds.add(type.asTypeName()) }
 infix fun String.bound(type: Type)      = TypeParameter(this).apply { bounds.add(type.typeName) }
-infix fun String.bound(@Suppress("UNUSED_PARAMETER") type: Unit) = TypeParameter(this)
+
+fun unbounded(name: String) = TypeParameter(name)
