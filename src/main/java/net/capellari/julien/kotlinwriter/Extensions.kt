@@ -133,7 +133,7 @@ inline fun <reified R: Any> AbsType.override(func: KFunction<R>, crossinline bui
 
 inline fun AbsType.operator(name: String, vararg params: Parameter, receiver: TypeName? = null, returns: TypeName? = null, crossinline build: AbsCallable.(List<Parameter>) -> Unit)
         = function(name, *params, receiver = receiver, returns = returns) { ps ->
-            modifier(KModifier.OVERRIDE, KModifier.OPERATOR)
+            modifier(KModifier.OPERATOR)
             build(ps)
         }
 
