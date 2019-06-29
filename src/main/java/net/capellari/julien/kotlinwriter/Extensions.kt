@@ -25,6 +25,12 @@ fun AbsContainer.class_(name: String, build: Class.(Class) -> Unit)
             add(it)
         }
 
+fun AbsContainer.object_(name: String, build: Object.(Object) -> Unit)
+        = Object(containerName, name).also {
+            it.(build)(it)
+            add(it)
+        }
+
 fun AbsContainer.function(name: String, vararg params: Parameter, receiver: TypeName? = null, returns: TypeName? = null, build: AbsCallable.(List<Parameter>) -> Unit = {}): Function
         = Function(name).also { f ->
             receiver?.let { f.receiver(it) }
