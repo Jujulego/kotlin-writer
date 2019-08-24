@@ -219,6 +219,8 @@ infix fun Parameter.default(value: Named)  = also { default(value) }
 infix fun Parameter.default(value: Number) = also { default(value) }
 infix fun Parameter.default(value: String) = also { default(value) }
 
+fun vararg(param: Parameter) = param.apply { modifier(KModifier.VARARG) }
+
 // Parameters
 inline fun <reified T: Any> Parameters.parameter(name: String, default: Named? = null, nullable: Boolean = false, crossinline build: Parameter.() -> Unit = {})
         = parameter(name of T::class.asNullableTypeName(nullable)) { default?.let { default(it) } }.also(build)
