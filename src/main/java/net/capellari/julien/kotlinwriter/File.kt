@@ -1,5 +1,6 @@
 package net.capellari.julien.kotlinwriter
 
+import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.MemberName
@@ -18,7 +19,7 @@ class File(pkg: String, name: String): AbsContainer(pkg, name), Wrapper<FileSpec
     override val containerName get() = pkg
 
     // Methods
-    override fun annotate(annotation: ClassName) {
+    override fun annotate(annotation: AnnotationSpec) {
         builder.addAnnotation(annotation)
     }
 

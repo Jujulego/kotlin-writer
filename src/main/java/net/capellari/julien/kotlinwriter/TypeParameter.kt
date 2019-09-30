@@ -20,7 +20,7 @@ class TypeParameter(override val name: String) : AbsTypeName(), Named, Modifiabl
             reified = reified,
             nullable = nullable,
             bounds = bounds,
-            annotations = annotations.map { AnnotationSpec.builder(it).build() }
+            annotations = annotations
         )
 
     // Methods

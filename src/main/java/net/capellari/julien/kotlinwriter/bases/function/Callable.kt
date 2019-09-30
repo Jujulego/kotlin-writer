@@ -1,9 +1,6 @@
 package net.capellari.julien.kotlinwriter.bases.function
 
-import com.squareup.kotlinpoet.ClassName
-import com.squareup.kotlinpoet.CodeBlock
-import com.squareup.kotlinpoet.FunSpec
-import com.squareup.kotlinpoet.KModifier
+import com.squareup.kotlinpoet.*
 import net.capellari.julien.kotlinwriter.TypeParameter
 import net.capellari.julien.kotlinwriter.bases.*
 
@@ -15,7 +12,7 @@ interface Callable: Wrapper<FunSpec>, Annotable, Templatable, Modifiable, Codabl
     override val spec get() = builder.build()
 
     // Methods
-    override fun annotate(annotation: ClassName) {
+    override fun annotate(annotation: AnnotationSpec) {
         builder.addAnnotation(annotation)
     }
 

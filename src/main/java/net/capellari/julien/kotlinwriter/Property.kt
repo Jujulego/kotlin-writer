@@ -1,9 +1,6 @@
 package net.capellari.julien.kotlinwriter
 
-import com.squareup.kotlinpoet.ClassName
-import com.squareup.kotlinpoet.KModifier
-import com.squareup.kotlinpoet.PropertySpec
-import com.squareup.kotlinpoet.TypeName
+import com.squareup.kotlinpoet.*
 import net.capellari.julien.kotlinwriter.bases.Templatable
 import net.capellari.julien.kotlinwriter.bases.function.AbsCallable
 import net.capellari.julien.kotlinwriter.bases.property.Getter
@@ -25,7 +22,7 @@ class Property(override val name: String, val type: TypeName): Property, Receive
     // Methods
     override fun toString() = name
 
-    override fun annotate(annotation: ClassName) {
+    override fun annotate(annotation: AnnotationSpec) {
         builder.addAnnotation(annotation)
     }
 

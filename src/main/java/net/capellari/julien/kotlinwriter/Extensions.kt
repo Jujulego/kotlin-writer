@@ -15,8 +15,8 @@ import kotlin.reflect.full.extensionReceiverParameter
 import kotlin.reflect.full.valueParameters
 
 // Annotable
-fun Annotable.annotate(type: KClass<*>) = annotate(type.asClassName())
-inline fun <reified T: Annotation> Annotable.annotate() = annotate(T::class.asClassName())
+fun Annotable.annotate(type: KClass<*>, vararg args: Argument) = annotate(type.asClassName(), *args)
+inline fun <reified T: Annotation> Annotable.annotate(vararg args: Argument) = annotate(T::class.asClassName(), *args)
 
 // Container
 fun AbsContainer.class_(name: String, build: Class.(Class) -> Unit)
@@ -215,9 +215,17 @@ infix fun String.of(type: TypeName)  = Parameter(this, type)
 infix fun String.of(type: KClass<*>) = Parameter(this, type.asTypeName())
 infix fun String.of(type: Type)      = Parameter(this, type.typeName)
 
+infix fun String.to(value: Named)  = Argument(this, value.name)
+infix fun String.to(value: Number) = Argument(this, value.toString())
+infix fun String.to(value: String) = Argument(this, value)
+
 infix fun Parameter.default(value: Named)  = also { default(value) }
 infix fun Parameter.default(value: Number) = also { default(value) }
 infix fun Parameter.default(value: String) = also { default(value) }
+
+fun arg(value: Named)  = Argument(null, value.name)
+fun arg(value: Number) = Argument(null, value.toString())
+fun arg(value: String) = Argument(null, value)
 
 fun vararg(param: Parameter) = param.apply { modifier(KModifier.VARARG) }
 

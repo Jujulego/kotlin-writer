@@ -1,9 +1,6 @@
 package net.capellari.julien.kotlinwriter
 
-import com.squareup.kotlinpoet.ClassName
-import com.squareup.kotlinpoet.KModifier
-import com.squareup.kotlinpoet.ParameterSpec
-import com.squareup.kotlinpoet.TypeName
+import com.squareup.kotlinpoet.*
 import net.capellari.julien.kotlinwriter.bases.*
 
 @KotlinMarker
@@ -25,7 +22,7 @@ class Parameter(override val name: String, val type: TypeName)
         default = value
     }
 
-    override fun annotate(annotation: ClassName) {
+    override fun annotate(annotation: AnnotationSpec) {
         builder.addAnnotation(annotation)
     }
 

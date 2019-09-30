@@ -14,6 +14,6 @@ class Lambda(val returns: TypeName = Unit::class.asTypeName()) : AbsTypeName() {
         get() = LambdaTypeName.get(receiver, params.map { it.spec }, returnType = returns)
             .copy(
                 nullable = nullable,
-                annotations = annotations.map { AnnotationSpec.builder(it).build() }
+                annotations = annotations
             )
 }

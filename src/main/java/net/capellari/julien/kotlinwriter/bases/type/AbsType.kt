@@ -1,9 +1,6 @@
 package net.capellari.julien.kotlinwriter.bases.type
 
-import com.squareup.kotlinpoet.ClassName
-import com.squareup.kotlinpoet.KModifier
-import com.squareup.kotlinpoet.TypeName
-import com.squareup.kotlinpoet.TypeSpec
+import com.squareup.kotlinpoet.*
 import net.capellari.julien.kotlinwriter.TypeParameter
 import net.capellari.julien.kotlinwriter.bases.Annotable
 import net.capellari.julien.kotlinwriter.bases.Modifiable
@@ -21,7 +18,7 @@ abstract class AbsType(val builder: TypeSpec.Builder, pkg: String, name: String)
     override val spec get() = builder.build()
 
     // Methods
-    override fun annotate(annotation: ClassName) {
+    override fun annotate(annotation: AnnotationSpec) {
         builder.addAnnotation(annotation)
     }
 
