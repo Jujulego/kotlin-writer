@@ -21,7 +21,7 @@
         </compilerSettings>
         <compilerArguments>
           <option name="destination" value="$MODULE_DIR$/build/classes/kotlin/main" />
-          <option name="classpath" value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-reflect/1.3.50/b499f22fd7c3e9c2e5b6c4005221fa47fc7f9a7a/kotlin-reflect-1.3.50.jar;C:/Users/julie/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib/1.3.50/b529d1738c7e98bbfa36a4134039528f2ce78ebf/kotlin-stdlib-1.3.50.jar;C:/Users/julie/.gradle/caches/modules-2/files-2.1/com.squareup/kotlinpoet/1.2.0/8e08da6eec98e408b8adc7f7e6f266d5dc9b698/kotlinpoet-1.2.0.jar;C:/Users/julie/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-common/1.3.50/3d9cd3e1bc7b92e95f43d45be3bfbcf38e36ab87/kotlin-stdlib-common-1.3.50.jar;C:/Users/julie/.gradle/caches/modules-2/files-2.1/org.jetbrains/annotations/13.0/919f0dfe192fb4e063e7dacadee7f8bb9a2672a9/annotations-13.0.jar" />
+          <option name="classpath" value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-reflect/1.3.50/b499f22fd7c3e9c2e5b6c4005221fa47fc7f9a7a/kotlin-reflect-1.3.50.jar;C:/Users/julie/.gradle/caches/modules-2/files-2.1/com.squareup/kotlinpoet/1.3.0/51d9553eb8bb0c417bc1279fc612ec2cfe9774de/kotlinpoet-1.3.0.jar;C:/Users/julie/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-jdk7/1.3.31/e652770b6416c6d85934086899ffed3eccd35813/kotlin-stdlib-jdk7-1.3.31.jar;C:/Users/julie/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib/1.3.50/b529d1738c7e98bbfa36a4134039528f2ce78ebf/kotlin-stdlib-1.3.50.jar;C:/Users/julie/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-common/1.3.50/3d9cd3e1bc7b92e95f43d45be3bfbcf38e36ab87/kotlin-stdlib-common-1.3.50.jar;C:/Users/julie/.gradle/caches/modules-2/files-2.1/org.jetbrains/annotations/13.0/919f0dfe192fb4e063e7dacadee7f8bb9a2672a9/annotations-13.0.jar" />
           <option name="noStdlib" value="true" />
           <option name="noReflect" value="true" />
           <option name="moduleName" value="kotlinwriter" />
@@ -79,8 +79,9 @@
       </library>
     </orderEntry>
     <orderEntry type="library" exported="" name="Gradle: kotlin-reflect-1.3.50" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: kotlinpoet-1.3.0" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: kotlin-stdlib-jdk7-1.3.31" level="project" />
     <orderEntry type="library" exported="" name="Gradle: kotlin-stdlib-1.3.50" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: kotlinpoet-1.2.0" level="project" />
     <orderEntry type="library" exported="" name="Gradle: kotlin-stdlib-common-1.3.50" level="project" />
     <orderEntry type="library" exported="" name="Gradle: annotations-13.0" level="project" />
   </component>
